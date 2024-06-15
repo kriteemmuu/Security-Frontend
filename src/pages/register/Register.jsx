@@ -207,7 +207,7 @@ const Register = () => {
           </div>
 
           <button onClick={handleSubmit} className='btn btn-primary w-100'>
-            Create an Account
+            Create Your Account
           </button>
         </form>
       </div>
