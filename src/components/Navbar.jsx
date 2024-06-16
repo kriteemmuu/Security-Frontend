@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Link, useLocation } from 'react-router-dom';
 
 const Navbar = () => {
@@ -17,7 +17,7 @@ const Navbar = () => {
         <div className="container-fluid">
           {/* Add logo image */}
           <a className="navbar-brand" href="#">
-            <img src="assets/images/baby.png" alt="Logo" style={{ height: '30px', marginRight: '10px' }} />
+            <img src="/assets/images/baby.png" alt="Logo" style={{ height: '30px', marginRight: '10px' }} />
             Diva <font color='red'>Maternity</font>
           </a>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

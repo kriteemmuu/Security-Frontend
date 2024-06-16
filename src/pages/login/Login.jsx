@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { loginUserApi } from '../../apis/Api';
@@ -88,7 +88,8 @@ const Login = () => {
         </div>
         
         <div className='text-center mt-3'>
-          <p>Don't have an account? <Link to='/register'>Register Now</Link></p>
+        <p>Don&apos;t have an account? <Link to='/register'>Register Now</Link></p>
+
           {/* Add buttons for logging in with Google and Apple ID */}
           <button className="btn w-100 mt-2" style={{ backgroundColor: '#db4437', color: '#fff' }}>
             <img src="assets/images/google.png" alt="Google Logo" style={{ height: '20px', marginRight: '10px' }} />

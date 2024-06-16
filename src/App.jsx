@@ -7,7 +7,6 @@ import {
 import Homepage from './pages/homepage/Homepage';
 import Login from './pages/login/Login';
 import Register from './pages/register/Register';
-import Navbar from './components/Navbar';
  
 // Toast Config
 import { ToastContainer } from 'react-toastify';
