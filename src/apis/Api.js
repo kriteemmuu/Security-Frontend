@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Creating backend Config
 const Api = axios.create({
-  baseURL: "http://localhost:3001",
+  baseURL: "http://localhost:3000",
 });
 
 // Error handling function
