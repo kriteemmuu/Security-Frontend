@@ -106,7 +106,7 @@ const Login = () => {
 
         <div className="text-center mt-3">
           <p>
-            Don&apos;t have an account? <Link to="/register">Register Now</Link>
+            Dont have an account? <Link to="/register">Register Now</Link>
           </p>
 
           {/* Add buttons for logging in with Google and Apple ID */}
