@@ -125,7 +125,7 @@ const Register = () => {
       .catch((error) => {
         setLoading(false);
         console.error("Registration error:", error);
-        toast.error("Registration failed. Please try again.");
+        toast.error("Registration error. Please try again.");
       });
   };
 
