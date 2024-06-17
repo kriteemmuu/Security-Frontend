@@ -176,7 +176,7 @@ const ProfilePage = () => {
                   />
                 </Form.Group>
                 <Button variant="primary" type="submit" className="mt-3">
-                  Change Password
+                  Change  your Password
                 </Button>
               </Form>
             </Card.Body>
