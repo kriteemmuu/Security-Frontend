@@ -69,7 +69,7 @@ const Login = () => {
           style={{ height: "100px" }}
         />
       </div>
-      <h1 className="text-center mt-4">Login to Diva</h1>
+      <h1 className="text-center mt-4"> Diva</h1>
       <form onSubmit={handleLogin} className="w-50 mx-auto mt-4">
         <div className="mb-3">
           <label className="form-label">Email Address</label>
