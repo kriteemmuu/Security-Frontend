@@ -167,7 +167,7 @@ const ProfilePage = () => {
                   />
                 </Form.Group>
                 <Form.Group controlId="formNewPassword">
-                  <Form.Label>New Password</Form.Label>
+                  <Form.Label>Enter New Password</Form.Label>
                   <Form.Control
                     type="password"
                     name="newPassword"
