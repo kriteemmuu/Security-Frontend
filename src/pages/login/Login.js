@@ -115,7 +115,7 @@ const Login = () => {
             style={{ backgroundColor: "#db4437", color: "#fff" }}
           >
             <img
-              src="assets/images/"
+              src="assets/images/google.png"
               alt="Google Logo"
               style={{ height: "20px", marginRight: "10px" }}
             />
