@@ -100,7 +100,7 @@ const Login = () => {
 
         <div className="text-center mt-3">
           <Link to="/forgotpassword" className="text-warning">
-            Forgot  Your Password?
+            Forgot Password?
           </Link>
         </div>
 
