@@ -23,7 +23,7 @@ const ProfilePage = () => {
     const fetchUserData = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:3000/api/user/me", {
+        const response = await axios.get("http://localhost:5000/api/user/me", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -59,7 +59,7 @@ const ProfilePage = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.put(
-        "http://localhost:3000/api/user/update",
+        "http://localhost:5000/api/user/update",
         formData,
         {
           headers: {
@@ -80,7 +80,7 @@ const ProfilePage = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.put(
-        "http://localhost:3000/api/user/change-password",
+        "http://localhost:5000/api/user/change-password",
         passwordData,
         {
           headers: {
