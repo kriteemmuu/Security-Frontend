@@ -23,7 +23,7 @@ const ProfilePage = () => {
     const fetchUserData = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:5000/api/user/me", {
+        const response = await axios.get("http://localhost:3001/api/user/me", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -59,7 +59,7 @@ const ProfilePage = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.put(
-        "http://localhost:5000/api/user/update",
+        "http://localhost:3001/api/user/update",
         formData,
         {
           headers: {
@@ -80,7 +80,7 @@ const ProfilePage = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.put(
-        "http://localhost:5000/api/user/change-password",
+        "http://localhost:3001/api/user/change-password",
         passwordData,
         {
           headers: {
@@ -158,7 +158,7 @@ const ProfilePage = () => {
               <Card.Title>Change Password</Card.Title>
               <Form onSubmit={handlePasswordSubmit}>
                 <Form.Group controlId="formOldPassword">
-                  <Form.Label>Old Password</Form.Label>
+                  <Form.Label>Enter Old Password?</Form.Label>
                   <Form.Control
                     type="password"
                     name="oldPassword"
@@ -167,7 +167,7 @@ const ProfilePage = () => {
                   />
                 </Form.Group>
                 <Form.Group controlId="formNewPassword">
-                  <Form.Label>New Password</Form.Label>
+                  <Form.Label>Enter New Password</Form.Label>
                   <Form.Control
                     type="password"
                     name="newPassword"
@@ -176,7 +176,7 @@ const ProfilePage = () => {
                   />
                 </Form.Group>
                 <Button variant="primary" type="submit" className="mt-3">
-                  Change Password
+                  Change  your Password
                 </Button>
               </Form>
             </Card.Body>

@@ -40,7 +40,7 @@ const TopHeader = () => {
             alt="Logo"
             style={{ height: "30px", marginRight: "10px" }}
           />
-          Diva <span style={{ color: "red" }}>Maternity</span>
+          Diva <span style={{ color: "red" }}>Maternity Store</span>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
