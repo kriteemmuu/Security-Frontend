@@ -218,7 +218,7 @@ const Register = () => {
 
           <button className="btn btn-primary w-100">
             {loading && <span>Loading...</span>}
-            Create your  Account
+            Create an  Account
           </button>
         </form>
       </div>
