@@ -143,7 +143,7 @@ const ProfilePage = () => {
                     />
                   </Form.Group>
                   <Button variant="primary" type="submit" className="mt-3">
-                    Update Profile
+                    Update your Profile
                   </Button>
                 </Form>
               )}
