@@ -8,9 +8,27 @@ import "./Home.css";
 const Home = () => {
   const navigate = useNavigate();
 
-  const handleViewProducts = (productId) => {
-    navigate(`/product/${productId}`);
+  const handleViewProducts = (product) => {
+    navigate("/product-details", { state: product });
   };
+
+  const products = [
+    {
+      name: "Baby Essentials",
+      price: 500,
+      image: Image1,
+    },
+    {
+      name: "Baby Products",
+      price: 500,
+      image: WomenImg,
+    },
+    {
+      name: "Women's Health",
+      price: 500,
+      image: Women2Img,
+    }
+  ];
 
   return (
     <Container>
@@ -35,7 +53,6 @@ const Home = () => {
             Explore our wide range of products designed to make your maternity
             journey easier and more enjoyable.
           </h6>
-          
         </Col>
       </Row>
 
@@ -46,65 +63,28 @@ const Home = () => {
       </Row>
 
       <Row className="mt-3">
-        <Col md={4} className="mb-4">
-          <Card className="card-custom">
-            <Card.Img
-              variant="top"
-              src={Image1}
-              alt="Maternity Clothing"
-              className="card-img-custom"
-            />
-            <Card.Body>
-              <Card.Title>Baby Essentials</Card.Title>
-              <Card.Text>
-                Discover comfortable and stylish maternity clothing options.
-              </Card.Text>
-              <Button variant="primary" onClick={() => handleViewProducts(1)}>
-                View Products
-              </Button>
-            </Card.Body>
-          </Card>
-        </Col>
-
-        <Col md={4} className="mb-4">
-          <Card className="card-custom">
-            <Card.Img
-              variant="top"
-              src={WomenImg}
-              alt="Baby Products"
-              className="card-img-custom"
-            />
-            <Card.Body>
-              <Card.Title>Baby Products</Card.Title>
-              <Card.Text>
-                Find essential baby products for newborns and infants.
-              </Card.Text>
-              <Button variant="primary" onClick={() => handleViewProducts(2)}>
-                View Products
-              </Button>
-            </Card.Body>
-          </Card>
-        </Col>
-
-        <Col md={4} className="mb-4">
-          <Card className="card-custom">
-            <Card.Img
-              variant="top"
-              src={Women2Img}
-              alt="Women&apos;s Health"
-              className="card-img-custom"
-            />
-            <Card.Body>
-              <Card.Title>Women&apos;s Health</Card.Title>
-              <Card.Text>
-                Browse products that support women&apos;s health and well-being.
-              </Card.Text>
-              <Button variant="primary" onClick={() => handleViewProducts(3)}>
-                View Products
-              </Button>
-            </Card.Body>
-          </Card>
-        </Col>
+        {products.map((product, index) => (
+          <Col md={4} className="mb-4" key={index}>
+            <Card className="card-custom">
+              <Card.Img
+                variant="top"
+                src={product.image}
+                alt={product.name}
+                className="card-img-custom"
+              />
+              <Card.Body>
+                <Card.Title>{product.name}</Card.Title>
+                <Card.Text>Price: ${product.price}</Card.Text>
+                <Button
+                  variant="primary"
+                  onClick={() => handleViewProducts(product)}
+                >
+                  View Products
+                </Button>
+              </Card.Body>
+            </Card>
+          </Col>
+        ))}
       </Row>
     </Container>
   );
