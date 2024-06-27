@@ -1,17 +1,19 @@
-// src/pages/homepage/ProductDetails.js
-
-// Remove this line if you are not using React explicitly
-// import React from 'react';
+import { useLocation } from "react-router-dom";
 
 const ProductDetails = () => {
-    return (
+  const location = useLocation();
+  const { name, price, image } = location.state;
+
+  return (
+    <div>
+      <h2>Product Details</h2>
       <div>
-        <h2>Product Details</h2>
-        
-        {/* Add your product details here */}
+        <img src={image} alt={name} style={{ height: '200px', objectFit: 'cover' }} />
+        <h3>{name}</h3>
+        <p>Price: ${price}</p>
       </div>
-    );
-  };
-  
-  export default ProductDetails;
-  
+    </div>
+  );
+};
+
+export default ProductDetails;
