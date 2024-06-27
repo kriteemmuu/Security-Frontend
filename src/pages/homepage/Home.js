@@ -1,10 +1,17 @@
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import Image1 from "../../assets/images/pillow.png";
 import WomenImg from "../../assets/images/onezie.png";
 import Women2Img from "../../assets/images/maternity.png";
 import "./Home.css";
 
 const Home = () => {
+  const navigate = useNavigate();
+
+  const handleViewProducts = (productId) => {
+    navigate(`/product/${productId}`);
+  };
+
   return (
     <Container>
       <Row className="mt-4">
@@ -52,7 +59,9 @@ const Home = () => {
               <Card.Text>
                 Discover comfortable and stylish maternity clothing options.
               </Card.Text>
-              <Button variant="primary">View Products</Button>
+              <Button variant="primary" onClick={() => handleViewProducts(1)}>
+                View Products
+              </Button>
             </Card.Body>
           </Card>
         </Col>
@@ -70,7 +79,9 @@ const Home = () => {
               <Card.Text>
                 Find essential baby products for newborns and infants.
               </Card.Text>
-              <Button variant="primary">View Products</Button>
+              <Button variant="primary" onClick={() => handleViewProducts(2)}>
+                View Products
+              </Button>
             </Card.Body>
           </Card>
         </Col>
@@ -88,7 +99,9 @@ const Home = () => {
               <Card.Text>
                 Browse products that support women&apos;s health and well-being.
               </Card.Text>
-              <Button variant="primary">View Products</Button>
+              <Button variant="primary" onClick={() => handleViewProducts(3)}>
+                View Products
+              </Button>
             </Card.Body>
           </Card>
         </Col>

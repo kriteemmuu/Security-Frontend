@@ -4,95 +4,77 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 const Register = () => {
-  // Use state for all fields
   const navigate = useNavigate();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [dateOfBirth, setDateOfBirth] = useState("");
-  const [gender, setGender] = useState("");
-  const [loading, setLoading] = useState(false); // Loading state
+  const [loading, setLoading] = useState(false);
 
-  // Use state for error messages
   const [firstNameError, setFirstNameError] = useState("");
   const [lastNameError, setLastNameError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
-  const [dateOfBirthError, setDateOfBirthError] = useState("");
-  const [genderError, setGenderError] = useState("");
 
-  // Handle input changes
   const handleFirstname = (e) => setFirstName(e.target.value);
   const handleLastname = (e) => setLastName(e.target.value);
+  const handlePhone = (e) => setPhone(e.target.value);
   const handleEmail = (e) => setEmail(e.target.value);
   const handlePassword = (e) => setPassword(e.target.value);
   const handleConfirmPassword = (e) => setConfirmPassword(e.target.value);
-  const handleDateOfBirth = (e) => setDateOfBirth(e.target.value);
-  const handleGender = (e) => setGender(e.target.value);
 
-  // Validation function
   const validate = () => {
     let isValid = true;
 
-    if (firstName.trim() === "") {
+    if (!firstName.trim()) {
       setFirstNameError("First name is required!");
       isValid = false;
     } else {
       setFirstNameError("");
     }
 
-    if (lastName.trim() === "") {
+    if (!lastName.trim()) {
       setLastNameError("Last name is required!");
       isValid = false;
     } else {
       setLastNameError("");
     }
 
-    if (email.trim() === "") {
+    if (!phone.trim()) {
+      setPhoneError("Phone number is required!");
+      isValid = false;
+    } else {
+      setPhoneError("");
+    }
+
+    if (!email.trim()) {
       setEmailError("Email is required!");
       isValid = false;
     } else {
       setEmailError("");
     }
 
-    if (password.trim() === "") {
+    if (!password.trim()) {
       setPasswordError("Password is required!");
       isValid = false;
     } else {
       setPasswordError("");
     }
 
-    if (confirmPassword.trim() === "") {
-      setConfirmPasswordError("Confirm password is required!");
-      isValid = false;
-    } else if (confirmPassword.trim() !== password.trim()) {
-      setConfirmPasswordError("Password and confirm password don't match!");
+    if (confirmPassword.trim() !== password.trim()) {
+      setConfirmPasswordError("Passwords do not match!");
       isValid = false;
     } else {
       setConfirmPasswordError("");
     }
 
-    if (dateOfBirth.trim() === "") {
-      setDateOfBirthError("Date of birth is required!");
-      isValid = false;
-    } else {
-      setDateOfBirthError("");
-    }
-
-    if (gender.trim() === "") {
-      setGenderError("Gender is required!");
-      isValid = false;
-    } else {
-      setGenderError("");
-    }
-
     return isValid;
   };
 
-  // Submit button function
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -100,22 +82,20 @@ const Register = () => {
       return;
     }
 
-    setLoading(true); // Set loading to true
+    setLoading(true);
 
-    // Sending request to the API
     const data = {
       firstName,
       lastName,
+      phone,
       email,
       password,
-      dateOfBirth,
-      gender,
     };
 
     registerUserApi(data)
       .then((res) => {
         setLoading(false);
-        if (res.data.success === false) {
+        if (!res.data.success) {
           toast.error(res.data.message);
         } else {
           toast.success(res.data.message);
@@ -133,90 +113,44 @@ const Register = () => {
     <>
       <div className="container mt-5">
         <h1 className="text-center">Create Your Maternity Store Account</h1>
-
         <form onSubmit={handleSubmit} className="w-50 mx-auto mt-4">
           <div className="mb-3">
             <label className="form-label">First Name</label>
-            <input
-              onChange={handleFirstname}
-              type="text"
-              className="form-control"
-              placeholder="Enter your first name"
-            />
+            <input type="text" className="form-control" placeholder="Enter your first name" onChange={handleFirstname} />
             {firstNameError && <p className="text-danger">{firstNameError}</p>}
           </div>
 
           <div className="mb-3">
             <label className="form-label">Last Name</label>
-            <input
-              onChange={handleLastname}
-              type="text"
-              className="form-control"
-              placeholder="Enter your last name"
-            />
+            <input type="text" className="form-control" placeholder="Enter your last name" onChange={handleLastname} />
             {lastNameError && <p className="text-danger">{lastNameError}</p>}
           </div>
 
           <div className="mb-3">
+            <label className="form-label">Phone</label>
+            <input type="text" className="form-control" placeholder="Enter your phone number" onChange={handlePhone} />
+            {phoneError && <p className="text-danger">{phoneError}</p>}
+          </div>
+
+          <div className="mb-3">
             <label className="form-label">Email</label>
-            <input
-              onChange={handleEmail}
-              type="email"
-              className="form-control"
-              placeholder="Enter your email"
-            />
+            <input type="email" className="form-control" placeholder="Enter your email" onChange={handleEmail} />
             {emailError && <p className="text-danger">{emailError}</p>}
           </div>
 
           <div className="mb-3">
             <label className="form-label">Password</label>
-            <input
-              onChange={handlePassword}
-              type="password"
-              className="form-control"
-              placeholder="Enter your password"
-            />
+            <input type="password" className="form-control" placeholder="Enter your password" onChange={handlePassword} />
             {passwordError && <p className="text-danger">{passwordError}</p>}
           </div>
 
           <div className="mb-3">
             <label className="form-label">Confirm Password</label>
-            <input
-              onChange={handleConfirmPassword}
-              type="password"
-              className="form-control"
-              placeholder="Confirm your password"
-            />
-            {confirmPasswordError && (
-              <p className="text-danger">{confirmPasswordError}</p>
-            )}
+            <input type="password" className="form-control" placeholder="Confirm your password" onChange={handleConfirmPassword} />
+            {confirmPasswordError && <p className="text-danger">{confirmPasswordError}</p>}
           </div>
 
-          <div className="mb-3">
-            <label className="form-label">Date of Birth</label>
-            <input
-              onChange={handleDateOfBirth}
-              type="date"
-              className="form-control"
-              placeholder="Enter your date of birth"
-            />
-            {dateOfBirthError && (
-              <p className="text-danger">{dateOfBirthError}</p>
-            )}
-          </div>
-
-          <div className="mb-3">
-            <label className="form-label">Gender</label>
-            <select onChange={handleGender} className="form-control">
-              <option value="">Select your gender</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Other">Other</option>
-            </select>
-            {genderError && <p className="text-danger">{genderError}</p>}
-          </div>
-
-          <button className="btn btn-primary w-100">
+          <button type="submit" className="btn btn-primary w-100">
             {loading && <span>Loading...</span>}
             Create an Account
           </button>

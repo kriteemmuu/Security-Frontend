@@ -8,15 +8,13 @@ const TopHeader = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const location = useLocation();
 
-  const isAuthPage =
-    location.pathname === "/login" || location.pathname === "/register";
+  const isAuthPage = location.pathname === "/login" || location.pathname === "/register";
 
-  // Function to handle logout
- const handleLogout = () => {
-  localStorage.removeItem("user");
-  toast.success("Successfully logged out");
-  navigate("/login");
-};
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    toast.success("Successfully logged out");
+    navigate("/login");
+  };
 
   useEffect(() => {
     const dropdownToggles = document.querySelectorAll(".dropdown-toggle");
@@ -36,8 +34,8 @@ const TopHeader = () => {
       <Container>
         <Navbar.Brand href="#">
           <img
-            src="/assets/images/baby.png"
-            alt="Logo"
+            src="/assets/images/baby.png"  // Adjust the path based on where your component is within the project
+            alt=""
             style={{ height: "30px", marginRight: "10px" }}
           />
           Diva <span style={{ color: "red" }}>Maternity Store</span>
@@ -56,10 +54,7 @@ const TopHeader = () => {
             </Nav>
           )}
           {user && (
-            <NavDropdown
-              title={`Welcome, ${user?.firstName}!`}
-              id="basic-nav-dropdown"
-            >
+            <NavDropdown title={`Welcome, ${user?.firstName}!`} id="basic-nav-dropdown">
               <NavDropdown.Item as={Link} to="/profile">
                 Profile
               </NavDropdown.Item>

@@ -64,7 +64,7 @@ const Login = () => {
     <div className="container">
       <div className="d-flex justify-content-center mt-5">
         <img
-          src="assets/images/pregnancy.png"
+          src="/assets/images/pregnancy.png"
           alt="Logo"
           style={{ height: "100px" }}
         />
@@ -115,7 +115,7 @@ const Login = () => {
             style={{ backgroundColor: "#db4437", color: "#fff" }}
           >
             <img
-              src="assets/images/google.png"
+              src="/assets/images/google.png"
               alt="Google Logo"
               style={{ height: "20px", marginRight: "10px" }}
             />
@@ -126,7 +126,7 @@ const Login = () => {
             style={{ backgroundColor: "#000", color: "#fff" }}
           >
             <img
-              src="assets/images/apple.png"
+              src="/assets/images/apple.png"
               alt="Apple Logo"
               style={{ height: "20px", marginRight: "10px" }}
             />
