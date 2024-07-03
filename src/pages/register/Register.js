@@ -110,9 +110,10 @@ const Register = () => {
   };
 
   return (
+    
     <>
       <div className="container mt-5">
-        <h1 className="text-center">Create Your Maternity Store Account</h1>
+        <h1 className="text-center">Create Your  Account</h1>
         <form onSubmit={handleSubmit} className="w-50 mx-auto mt-4">
           <div className="mb-3">
             <label className="form-label">First Name</label>
@@ -149,9 +150,10 @@ const Register = () => {
             <input type="password" className="form-control" placeholder="Confirm your password" onChange={handleConfirmPassword} />
             {confirmPasswordError && <p className="text-danger">{confirmPasswordError}</p>}
           </div>
-
+          
           <button type="submit" className="btn btn-primary w-100">
             {loading && <span>Loading...</span>}
+            
             Create an Account
           </button>
         </form>

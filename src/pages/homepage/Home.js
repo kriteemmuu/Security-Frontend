@@ -1,8 +1,5 @@
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import Image1 from "../../assets/images/pillow.png";
-import WomenImg from "../../assets/images/onezie.png";
-import Women2Img from "../../assets/images/maternity.png";
 import "./Home.css";
 
 const Home = () => {
@@ -14,20 +11,62 @@ const Home = () => {
 
   const products = [
     {
-      name: "Baby Essentials",
+      name: "Sleeping pillow",
       price: 500,
-      image: Image1,
+      image: "/assets/images/pillow.png",
+     
     },
     {
-      name: "Baby Products",
-      price: 500,
-      image: WomenImg,
+      name: "Baby onezie",
+      price: 800,
+      image: "/assets/images/onezie.png",
     },
     {
       name: "Women's Health",
-      price: 500,
-      image: Women2Img,
-    }
+      price: 350,
+      image: "/assets/images/maternity.png",
+    },
+    {name:"Shampoo",
+      price:160,
+      image:"/assets/images/shampoo.jpeg",
+    },
+    {name:"cactus",
+      price:250,
+      image:"/assets/images/cactus.jpeg",
+    },
+    { name:"cradle",
+      price:2050,
+      image:"/assets/images/cradle.jpg"
+    },
+    {name:"Pacifier ",
+      price:500,
+      image:"/assets/images/pacifier.jpg"
+    },{
+      name:"Multi-vitamin",
+      price:850,
+      image:"/assets/images/vitamin.jpeg"
+    },
+    {name:"Excercise Ball",
+      price:2050,
+      image:"/assets/images/ball.jpeg"
+
+    },
+    {name:"Massage Balm",
+      price:2600,
+      image:"/assets/images/balm.webp"
+
+    },
+    {name:"Scar Gel",
+      price:1250,
+      image:"/assets/images/scar.jpg"
+
+    },
+    {name:"Clothes",
+      price:2050,
+      image:"/assets/images/Clothing.webp"
+
+    },
+
   ];
 
   return (
@@ -42,9 +81,7 @@ const Home = () => {
         <Col>
           <h6>
             Diva Maternity is your go-to online platform for category-based
-            products catering to women&apos;s and baby products. We offer a
-            convenient online ordering system to meet all your maternity and baby
-            needs.
+            products catering to women&apos;s and baby products. 
           </h6>
         </Col>
 
@@ -74,7 +111,7 @@ const Home = () => {
               />
               <Card.Body>
                 <Card.Title>{product.name}</Card.Title>
-                <Card.Text>Price: ${product.price}</Card.Text>
+                <Card.Text>Price: Rs {product.price}</Card.Text>
                 <Button
                   variant="primary"
                   onClick={() => handleViewProducts(product)}

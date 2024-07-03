@@ -10,7 +10,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const [loading, setLoading] = useState(false); // Loading state
+  const [loading, setLoading] = useState(false);
 
   const validation = () => {
     let isValid = true;
@@ -39,6 +39,7 @@ const Login = () => {
       password: password,
     };
 
+    setLoading(true);
     loginUserApi(data)
       .then((res) => {
         setLoading(false);
@@ -65,7 +66,7 @@ const Login = () => {
       <div className="d-flex justify-content-center mt-5">
         <img
           src="/assets/images/pregnancy.png"
-          alt="Logo"
+          alt="Pregnancy"
           style={{ height: "100px" }}
         />
       </div>
@@ -93,10 +94,12 @@ const Login = () => {
           {passwordError && <p className="text-danger">{passwordError}</p>}
         </div>
 
-        <button className="btn btn-primary w-100 mt-3">
-          {loading && <span>Loading...</span>}
-          Login
+       <div className="text-center">
+       <button className="btn btn-primary w-51 mt-2"
+        disabled={loading}>
+          {loading ? "Loading..." : "Login"}
         </button>
+       </div>
 
         <div className="text-center mt-3">
           <Link to="/forgotpassword" className="text-warning">
@@ -109,10 +112,9 @@ const Login = () => {
             Dont have an account? <Link to="/register">Register Now</Link>
           </p>
 
-          {/* Add buttons for logging in with Google and Apple ID */}
           <button
-            className="btn w-100 mt-2"
-            style={{ backgroundColor: "#db4437", color: "#fff" }}
+            className="btn btn-success w-51 mt-2"
+            style={{ backgroundColor: "#dfc9ee", color: "black",marginRight:"10px" }}
           >
             <img
               src="/assets/images/google.png"
@@ -122,8 +124,8 @@ const Login = () => {
             Sign Up with Google
           </button>
           <button
-            className="btn w-100 mt-2"
-            style={{ backgroundColor: "#000", color: "#fff" }}
+            className="btn btn-success w-51 mt-2"
+            style={{ backgroundColor: "#dfc9ee", color: "black" }}
           >
             <img
               src="/assets/images/apple.png"

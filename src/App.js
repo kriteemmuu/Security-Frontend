@@ -8,7 +8,7 @@ import Register from "./pages/register/Register.js";
 import { ToastContainer } from "react-toastify";
 import ProfilePage from "./pages/profile/ProfilePage.jsx";
 import ProductDetails from "./pages/homepage/ProductDetails.js";
-
+import AdminDashboard from "./pages/admin_dashboard/AdminDashboard.js";
 
 function App() {
   return (
@@ -22,7 +22,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/product-details" element={<ProductDetails />} />
-         
+         <Route path= "/admin_dashboard" element={<AdminDashboard/>} />
         </Routes>
       </Router>
     </>

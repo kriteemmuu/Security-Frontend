@@ -32,19 +32,19 @@ const TopHeader = () => {
   return (
     <Navbar bg="light" expand="lg">
       <Container>
-        <Navbar.Brand href="#">
+        <Navbar.Brand as={Link} to="/">
           <img
             src="/assets/images/baby.png"  // Adjust the path based on where your component is within the project
             alt=""
             style={{ height: "30px", marginRight: "10px" }}
           />
-          Diva <span style={{ color: "red" }}>Maternity Store</span>
+          Diva <span style={{ color: "purple" }}>Maternity Store</span>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link href="#">Home</Nav.Link>
-            <Nav.Link href="#">Link</Nav.Link>
+            <Nav.Link as={Link} to="/">Home</Nav.Link>
+            <Nav.Link as={Link} to="/admin_dashboard">Admin Dashboard</Nav.Link>  {/* Update this path */}
           </Nav>
           {!user && !isAuthPage && (
             <Nav>
