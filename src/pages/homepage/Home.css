@@ -2,11 +2,14 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    
+   
   }
   
   .card-img-custom {
-    height: 350px; /* Set this to your desired fixed height */
+    height: 400px; /* Set this to your desired fixed height */
     object-fit: cover;
+    
   }
   
   .card-body-custom {
@@ -14,5 +17,8 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+   
+    
+
   }
   

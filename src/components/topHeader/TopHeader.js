@@ -44,7 +44,7 @@ const TopHeader = () => {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link as={Link} to="/">Home</Nav.Link>
-            <Nav.Link as={Link} to="/admin_dashboard">Admin Dashboard</Nav.Link>  {/* Update this path */}
+            {/* <Nav.Link as={Link} to="/admin_dashboard">Admin Dashboard</Nav.Link>  Update this path */}
           </Nav>
           {!user && !isAuthPage && (
             <Nav>
