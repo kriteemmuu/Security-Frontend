@@ -1,40 +1,42 @@
-import  { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getSingleProductApi, updateProduct } from "../../apis/Api.js";
-
 const UpdateProduct = () => {
   const { id } = useParams();
-
+  const navigate = useNavigate();
   const [productName, setProductName] = useState("");
   const [productPrice, setProductPrice] = useState("");
   const [productCategory, setProductCategory] = useState("");
   const [productDescription, setProductDescription] = useState("");
   const [productImage, setProductImage] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
-  const [oldImage, setOldImage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const categories = [
     { _id: 1, categoryName: "Electronics" },
     { _id: 2, categoryName: "Clothing" },
     { _id: 3, categoryName: "Toys" },
     { _id: 4, categoryName: "Vitamins" },
-    // Add more categories as needed
   ];
 
   useEffect(() => {
-    getSingleProductApi(id)
-      .then((res) => {
-        console.log(res.data);
+    const fetchProduct = async () => {
+      try {
+        const res = await getSingleProductApi(id);
         setProductName(res.data.product.productName);
         setProductPrice(res.data.product.productPrice);
         setProductCategory(res.data.product.productCategory);
         setProductDescription(res.data.product.productDescription);
-        setOldImage(res.data.product.productImage);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+        setPreviewImage(
+          `http://localhost:3001/products/${res.data.product.productImage}`
+        );
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchProduct();
   }, [id]);
 
   const handleImage = (event) => {
@@ -43,7 +45,7 @@ const UpdateProduct = () => {
     setPreviewImage(URL.createObjectURL(file));
   };
 
-  const handleUpdate = (e) => {
+  const handleUpdate = async (e) => {
     e.preventDefault();
     const formData = new FormData();
     formData.append("productName", productName);
@@ -55,17 +57,28 @@ const UpdateProduct = () => {
       formData.append("productImage", productImage);
     }
 
-    updateProduct(id, formData)
-      .then((res) => {
-        if (res.status === 201) {
-          toast.success(res.data.message);
-        }
-      })
-      .catch((error) => {
-        if (error.response) {
-          toast.error(error.response.data.message);
-        }
-      });
+    const config = {
+      headers: {
+        authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "multipart/form-data",
+      },
+    };
+
+    setLoading(true);
+
+    try {
+      const res = await updateProduct(id, formData, config);
+      if (res.status === 201) {
+        toast.success(res.data.message);
+        navigate("/admin_dashboard");
+      }
+    } catch (error) {
+      if (error.response) {
+        toast.error(error.response.data.message);
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -82,6 +95,7 @@ const UpdateProduct = () => {
             className="form-control"
             type="text"
             placeholder="Enter your product name"
+            disabled={loading}
           />
 
           <label className="mt-2">Product Price</label>
@@ -91,6 +105,7 @@ const UpdateProduct = () => {
             className="form-control"
             type="number"
             placeholder="Enter your product price"
+            disabled={loading}
           />
 
           <label className="mt-2">Choose category</label>
@@ -98,6 +113,7 @@ const UpdateProduct = () => {
             value={productCategory}
             onChange={(e) => setProductCategory(e.target.value)}
             className="form-control"
+            disabled={loading}
           >
             <option value="">Select Category</option>
             {categories.map((category) => (
@@ -112,13 +128,23 @@ const UpdateProduct = () => {
             value={productDescription}
             onChange={(e) => setProductDescription(e.target.value)}
             className="form-control"
+            disabled={loading}
           ></textarea>
 
           <label className="mt-2">Choose product Image</label>
-          <input onChange={handleImage} type="file" className="form-control" />
+          <input
+            onChange={handleImage}
+            type="file"
+            className="form-control"
+            disabled={loading}
+          />
 
-          <button onClick={handleUpdate} className="btn btn-primary w-100 mt-2">
-            Update Product
+          <button
+            onClick={handleUpdate}
+            className="btn btn-primary w-100 mt-2"
+            disabled={loading}
+          >
+            {loading ? "Updating..." : "Update Product"}
           </button>
         </form>
 
@@ -127,9 +153,8 @@ const UpdateProduct = () => {
           <img
             height={"200px"}
             width={"300px"}
-            className="image-fluid rounded-4 object-fit-cover"
-            src={`http://localhost:3001/products/${oldImage}`}
-            alt=""
+            className="img-fluid rounded-4 object-fit-cover"
+            alt="myImg"
           />
           {previewImage && (
             <>
@@ -137,9 +162,9 @@ const UpdateProduct = () => {
               <img
                 height={"200px"}
                 width={"300px"}
-                className="image-fluid rounded-4 object-fit-cover"
+                className="img-fluid rounded-4 object-fit-cover"
                 src={previewImage}
-                alt=""
+                alt="previewImage"
               />
             </>
           )}

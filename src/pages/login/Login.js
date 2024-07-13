@@ -27,7 +27,7 @@ const Login = () => {
     return isValid;
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
     if (!validation()) {
@@ -40,25 +40,32 @@ const Login = () => {
     };
 
     setLoading(true);
-    loginUserApi(data)
-      .then((res) => {
-        setLoading(false);
 
-        if (res.data.success === false) {
-          toast.error(res.data.message);
+    try {
+      const res = await loginUserApi(data);
+
+      setLoading(false);
+
+      if (res.data.success === false) {
+        toast.error(res.data.message);
+      } else {
+        toast.success(res.data.message);
+        localStorage.setItem("token", res.data.token);
+        const convertedData = JSON.stringify(res.data.userData);
+        localStorage.setItem("user", convertedData);
+
+        // Navigate after setting the local storage
+        if (res.data.userData.role === "admin") {
+          navigate("/admin_dashboard");
         } else {
-          toast.success(res.data.message);
           navigate("/");
-          localStorage.setItem("token", res.data.token);
-          const convertedData = JSON.stringify(res.data.userData);
-          localStorage.setItem("user", convertedData);
         }
-      })
-      .catch((error) => {
-        setLoading(false);
-        console.error("Login error:", error);
-        toast.error("Login failed. Please try again.");
-      });
+      }
+    } catch (error) {
+      setLoading(false);
+      console.error("Login error:", error);
+      toast.error("Login failed. Please try again.");
+    }
   };
 
   return (
@@ -94,12 +101,11 @@ const Login = () => {
           {passwordError && <p className="text-danger">{passwordError}</p>}
         </div>
 
-       <div className="text-center">
-       <button className="btn btn-primary w-51 mt-2"
-        disabled={loading}>
-          {loading ? "Loading..." : "Login"}
-        </button>
-       </div>
+        <div className="text-center">
+          <button className="btn btn-primary w-51 mt-2" disabled={loading}>
+            {loading ? "Loading..." : "Login"}
+          </button>
+        </div>
 
         <div className="text-center mt-3">
           <Link to="/forgotpassword" className="text-warning">
@@ -114,7 +120,11 @@ const Login = () => {
 
           <button
             className="btn btn-success w-51 mt-2"
-            style={{ backgroundColor: "#dfc9ee", color: "black",marginRight:"10px" }}
+            style={{
+              backgroundColor: "#dfc9ee",
+              color: "black",
+              marginRight: "10px",
+            }}
           >
             <img
               src="/assets/images/google.png"

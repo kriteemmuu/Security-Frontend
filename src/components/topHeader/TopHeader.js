@@ -1,40 +1,39 @@
-import { Navbar, Nav, NavDropdown, Container } from "react-bootstrap";
+import { Navbar, Nav, NavDropdown, Container, Badge } from "react-bootstrap";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { FaHeart, FaShoppingCart } from "react-icons/fa";
 
 const TopHeader = () => {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
+  const initialCart = JSON.parse(localStorage.getItem("cart")) || [];
+  const [cart] = useState(initialCart);
+
   const location = useLocation();
 
-  const isAuthPage = location.pathname === "/login" || location.pathname === "/register";
+  const isAuthPage =
+    location.pathname === "/login" || location.pathname === "/register";
 
   const handleLogout = () => {
+    localStorage.removeItem("token");
     localStorage.removeItem("user");
+    localStorage.removeItem("cart");
+
     toast.success("Successfully logged out");
     navigate("/login");
   };
 
   useEffect(() => {
-    const dropdownToggles = document.querySelectorAll(".dropdown-toggle");
-    dropdownToggles.forEach((dropdownToggle) => {
-      dropdownToggle.addEventListener("click", function () {
-        this.classList.toggle("show");
-        const dropdownMenu = this.nextElementSibling;
-        if (dropdownMenu) {
-          dropdownMenu.classList.toggle("show");
-        }
-      });
-    });
-  }, []);
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
 
   return (
     <Navbar bg="light" expand="lg">
       <Container>
         <Navbar.Brand as={Link} to="/">
           <img
-            src="/assets/images/baby.png"  // Adjust the path based on where your component is within the project
+            src="/assets/images/baby.png"
             alt=""
             style={{ height: "30px", marginRight: "10px" }}
           />
@@ -43,9 +42,39 @@ const TopHeader = () => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link as={Link} to="/">Home</Nav.Link>
-            {/* <Nav.Link as={Link} to="/admin_dashboard">Admin Dashboard</Nav.Link>  Update this path */}
+            <Nav.Link as={Link} to="/">
+              Home
+            </Nav.Link>
           </Nav>
+
+          <Nav className="d-flex align-items-center">
+            <Nav.Link as={Link} to="/wishlist" className="position-relative">
+              <FaHeart />
+
+              <Badge
+                pill
+                bg="danger"
+                style={{ position: "absolute", top: "-5px", right: "-10px" }}
+              >
+                0
+              </Badge>
+            </Nav.Link>
+            <Nav.Link
+              as={Link}
+              to="/cart-details"
+              className="position-relative mx-3"
+            >
+              <FaShoppingCart />
+              <Badge
+                pill
+                bg="danger"
+                style={{ position: "absolute", top: "-5px", right: "-10px" }}
+              >
+                {initialCart.length}
+              </Badge>
+            </Nav.Link>
+          </Nav>
+
           {!user && !isAuthPage && (
             <Nav>
               <Nav.Link as={Link} to="/login" className="btn btn-primary">
@@ -54,10 +83,20 @@ const TopHeader = () => {
             </Nav>
           )}
           {user && (
-            <NavDropdown title={`Welcome, ${user?.firstName}!`} id="basic-nav-dropdown">
+            <NavDropdown
+              title={`Welcome, ${user?.firstName}!`}
+              id="basic-nav-dropdown"
+            >
               <NavDropdown.Item as={Link} to="/profile">
                 Profile
               </NavDropdown.Item>
+              {user && user?.role === "admin" ? (
+                <NavDropdown.Item as={Link} to="/admin_dashboard">
+                  dashboard
+                </NavDropdown.Item>
+              ) : (
+                ""
+              )}
               <NavDropdown.Item as={Link} to="#">
                 Settings
               </NavDropdown.Item>

@@ -47,10 +47,8 @@
 // // Get All Categories API
 // export const getAllCategory = () => Api.get("/api/category/get_all_categories");
 
-
 // // export const getSingleProductApi = (id) =>
 // //   Api.get(`/api/product/get_single_product/${id}`);
-
 
 import axios from "axios";
 
@@ -79,22 +77,28 @@ export const registerUserApi = (data) => Api.post("/api/user/create", data);
 export const loginUserApi = (data) => Api.post("/api/user/login", data);
 
 // Create Product API
-export const createProductApi = (data) => Api.post("/api/product/create", data);
+export const createProductApi = (data) =>
+  Api.post("/api/product/create",  data);
+
+export const getAllHomeProducts = () => Api.get("/api/product/allProducts");
+export const singleProductDetails = (id) =>
+  Api.get(`/api/product/single-productDetail/${id}`);
 
 // Get All Products API
-export const getAllProducts = () => Api.get("/api/product/get_all_products");
+export const getAllProducts = () =>
+  Api.get("/api/product/get_all_products", config);
 
 // Get Single Product API
 export const getSingleProductApi = (id) =>
-  Api.get(`/api/product/get_single_product/${id}`);
+  Api.get(`/api/product/get_single_product/${id}`, config);
 
 // Delete Product API
 export const deleteProduct = (id) =>
   Api.delete(`/api/product/delete-product/${id}`);
 
 // Update Product API
-export const updateProduct = (id, data) =>
-  Api.put(`/api/product/update_product/${id}`, data);
+export const updateProduct = (id, data, config) =>
+  Api.put(`/api/product/update_product/${id}`, data, config);
 
 // Get All Categories API
 export const getAllCategory = () => Api.get("/api/category/get_all_categories");
@@ -102,8 +106,6 @@ export const getAllCategory = () => Api.get("/api/category/get_all_categories");
 // Paginated Products API
 export const getPaginatedProductsApi = (page, limit) =>
   Api.get(`/api/product/pagination?page=${page}&limit=${limit}`);
-
-
 
 // Create Cart API
 
@@ -116,6 +118,3 @@ export const getCartItems = () => Api.get("/api/cart/get_cart_items", config);
 // Get Cart Items by User
 export const getCartItemsApi = (userId) =>
   Api.get(`/api/cart/get_cart_items?userId=${userId}`, config);
-
-
-
