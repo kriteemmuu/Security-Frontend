@@ -124,6 +124,7 @@ const TopHeader = () => {
   const initialCart = JSON.parse(localStorage.getItem("cart")) || [];
   const [cart] = useState(initialCart);
   const [wishlistCount, setWishlistCount] = useState(0);
+  
 
   const location = useLocation();
   const isAuthPage = location.pathname === "/login" || location.pathname === "/register";
