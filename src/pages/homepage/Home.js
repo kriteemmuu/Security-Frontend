@@ -170,7 +170,7 @@ const Home = () => {
           <h2 className="welcome-text"> To Diva Maternity</h2>
           
           <img 
-            src="../assets/images/YAY.png" // Path to the YAY image
+            src="../assets/images/STORE.jpeg" // Path to the YAY image
              className="graphic-image-border"
             alt="Maternity Graphic"
             style={{ width: "100%", height: "auto", marginTop: "20px" }}
