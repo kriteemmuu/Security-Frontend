@@ -3,20 +3,19 @@ import { Container, Row, Col, ListGroup, Button } from "react-bootstrap";
 import { FaTrash } from "react-icons/fa";
 
 const WishList = () => {
-  // Retrieve wishlist items from localStorage
   const [wishlist, setWishlist] = useState(() => {
     const savedWishlist = localStorage.getItem("wishlist");
     return savedWishlist ? JSON.parse(savedWishlist) : [];
   });
 
-  // Function to handle item removal from wishlist
-  const handleRemoveFromWishlist = (productId) => {
-    const updatedWishlist = wishlist.filter((item) => item.id !== productId);
-    setWishlist(updatedWishlist);
-    localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
+  // Function to handle item removal from wishlist by index
+  const handleRemoveFromWishlistByIndex = (index) => {
+    const updatedWishlist = [...wishlist]; // Create a copy of the wishlist
+    updatedWishlist.splice(index, 1); // Remove item by index
+    setWishlist(updatedWishlist); // Update state
+    localStorage.setItem("wishlist", JSON.stringify(updatedWishlist)); // Update localStorage
   };
 
-  // useEffect to update localStorage when wishlist changes
   useEffect(() => {
     localStorage.setItem("wishlist", JSON.stringify(wishlist));
   }, [wishlist]);
@@ -30,8 +29,8 @@ const WishList = () => {
             <p>Your wishlist is empty.</p>
           ) : (
             <ListGroup variant="flush">
-              {wishlist.map((item) => (
-                <ListGroup.Item key={item.id}>
+              {wishlist.map((item, index) => (
+                <ListGroup.Item key={index}>
                   <Row>
                     <Col md={2}>
                       <img
@@ -45,7 +44,7 @@ const WishList = () => {
                       <p>Price: Rs {item.productPrice}</p>
                     </Col>
                     <Col md={3} className="d-flex justify-content-end">
-                      <Button variant="danger" onClick={() => handleRemoveFromWishlist(item.id)}>
+                      <Button variant="danger" onClick={() => handleRemoveFromWishlistByIndex(index)}>
                         <FaTrash />
                         Remove
                       </Button>
