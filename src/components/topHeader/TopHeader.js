@@ -44,7 +44,7 @@ const TopHeader = () => {
     <Navbar bg="light" expand="lg">
       <Container>
         <Navbar.Brand as={Link} to="/">
-          <img src="/assets/images/baby.png" alt="" style={{ height: "30px", marginRight: "10px" }} />
+          <img src="/assets/images/bump.png" alt="" style={{ height: "40px", marginRight: "10px",width:"60px"}} />
           Diva <span style={{ color: "purple" }}>Maternity Store</span>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
