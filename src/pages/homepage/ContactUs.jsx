@@ -16,10 +16,10 @@ const ContactUs = () => {
             <FaMapMarkerAlt /> <a href="https://www.google.com/maps/search/?api=1&query=Kathmandu+Nepal+Dhapasi-height" target="_blank" rel="noopener noreferrer">Kathmandu/Nepal, Dhapasi-height</a>
           </p>
           <p>
-            <FaPhoneAlt /> <a href="tel:+9779864444444">+977 9864444444</a>
+            <FaPhoneAlt /> <a href="tel:+9779865555215">+977 9865555215</a>
           </p>
           <p>
-            <FaEnvelope /> <a href="mailto:mail@divanote.com">mail@divanote.com</a>
+            <FaEnvelope /> <a href="mailto:kritimakhatri123@gmail.com">kritimakhatri123@gmail.com</a>
           </p>
         </Col>
       </Row>
