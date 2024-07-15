@@ -13,6 +13,7 @@ import Product from "./pages/product/Product.jsx";
 import WishList from "./pages/cart/cartDetails/WishList.jsx";
 import UpdateProduct from "./pages/product/UpdateProduct.jsx";
 import CartDetails from "./pages/cart/cartDetails/CartDetails.jsx";
+import Search from "./pages/homepage/Search.jsx";
 
 function App() {
   return (
@@ -31,6 +32,8 @@ function App() {
           <Route path="/admin_dashboard" element={<AdminDashboard />} />
           <Route path="/add/product" element={<Product />} />
           <Route path="/admin/update/product/:id" element={<UpdateProduct />} />
+          <Route path="/search" element={<Search />} />
+
         </Routes>
       </Router>
     </>
