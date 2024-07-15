@@ -4,19 +4,22 @@ import { Link } from "react-router-dom";
 import { getAllHomeProducts } from "../../apis/Api.js";
 import "./Home.css";
 import { toast } from "react-toastify";
-import { FaHeart } from 'react-icons/fa';
+import { FaHeart, FaEye } from 'react-icons/fa';
 
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [wishlist, setWishlist] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await getAllHomeProducts();
         setProducts(response.data.data);
+        const savedWishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+        setWishlist(savedWishlist.map(item => item._id));
       } catch (error) {
-        console.log(error);
+        console.error("Failed to fetch products:", error);
       } finally {
         setLoading(false);
       }
@@ -25,21 +28,19 @@ const Home = () => {
     fetchData();
   }, []);
 
-  const handleAddToWishlist = (productId) => {
-    const productToAdd = products.find(product => product._id === productId);
-    if (!productToAdd) {
-      toast.error("Product not found!");
-      return;
-    }
-
-    let currentWishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-    if (currentWishlist.some(item => item._id === productId)) {
+  const handleAddToWishlist = (product) => {
+    const existing = wishlist.find(id => id === product._id);
+    if (existing) {
       toast.info("Item already in Wishlist");
       return;
     }
 
-    currentWishlist.push(productToAdd);
-    localStorage.setItem("wishlist", JSON.stringify(currentWishlist));
+    const updatedWishlist = [...wishlist, product._id];
+    localStorage.setItem("wishlist", JSON.stringify(updatedWishlist.map(id => ({
+      _id: id,
+      ...products.find(p => p._id === id)
+    }))));
+    setWishlist(updatedWishlist);
     toast.success("Added to Wishlist!");
   };
 
@@ -63,8 +64,8 @@ const Home = () => {
             <span className="visually-hidden">Loading...</span>
           </Spinner>
         ) : products.length > 0 ? (
-          products.map((product, index) => (
-            <Col md={4} className="mb-4" key={index}>
+          products.map((product) => (
+            <Col md={4} className="mb-4" key={product._id}>
               <Card className="card-custom">
                 <Card.Img
                   variant="top"
@@ -77,9 +78,13 @@ const Home = () => {
                   <Card.Text>Price: Rs {product.productPrice}</Card.Text>
                   <div className="d-flex justify-content-between">
                     <Link to={`/product-details/${product._id}`}>
-                      <Button variant="primary">View Product</Button>
+                      <Button variant="primary" className="d-flex align-items-center">
+                        <FaEye className="mr-2" /> View Product
+                      </Button>
                     </Link>
-                    <Button variant="link" onClick={() => handleAddToWishlist(product._id)} className="text-danger">
+                    <Button variant="link"
+                            className={`text-${wishlist.includes(product._id) ? 'danger' : 'secondary'}`}
+                            onClick={() => handleAddToWishlist(product)}>
                       <FaHeart size={24} />
                     </Button>
                   </div>
