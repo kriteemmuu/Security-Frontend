@@ -1,10 +1,11 @@
-import { useState } from "react";
+import  { useState } from "react";
 import { Container, Row, Col, Form, Button, ListGroup, Card } from "react-bootstrap";
 import { toast } from "react-toastify";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Checkout = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { cart, totalPrice } = location.state;
 
   const [formData, setFormData] = useState({
@@ -22,18 +23,58 @@ const Checkout = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Add your submission logic here
-
-      toast.success("Order placed successfully!");
+      if (formData.paymentMethod === "khalti") {
+        initiateKhaltiPayment();
+      } else if (formData.paymentMethod === "cod") {
+        toast.success("Order placed successfully!");
+      }
     } catch (error) {
       toast.error("Failed to place order.");
     }
   };
 
+  const initiateKhaltiPayment = () => {
+    let config = {
+      publicKey: "test_public_key_617c4c6fe77c441d88451ec1408a0c0e",
+      productIdentity: "1234567890",
+      productName: "Diva Maternity Store",
+      productUrl: "http://localhost:3001/",
+      eventHandler: {
+        onSuccess(payload) {
+          console.log(payload);
+          toast.success("Payment successful!");
+          // Redirect to the Khalti app if needed
+          navigate("/khalti-payment-success"); // Adjust the route as per your application
+        },
+        onError(error) {
+          console.log(error);
+          toast.error("Payment failed.");
+        },
+        onClose() {
+          console.log("widget is closing");
+        },
+      },
+      paymentPreference: [
+        "KHALTI",
+        "EBANKING",
+        "MOBILE_BANKING",
+        "CONNECT_IPS",
+        "SCT",
+      ],
+    };
+
+    let checkout = new window.KhaltiCheckout(config);
+    checkout.show({ amount: totalPrice * 100 });
+  };
+
+  const handlePaymentMethodChange = (method) => {
+    setFormData({ ...formData, paymentMethod: method });
+  };
+
   return (
     <Container className="mt-5">
       <Row>
-        <Col md={8}>
+        <Col md={6}>
           <Card>
             <Card.Body>
               <h2>Checkout</h2>
@@ -71,31 +112,34 @@ const Checkout = () => {
                     size="sm"
                   />
                 </Form.Group>
-                <Form.Group controlId="formPaymentMethod" className="mb-3">
-                  <Form.Label>Payment Method</Form.Label>
-                  <Form.Control
-                    as="select"
-                    name="paymentMethod"
-                    value={formData.paymentMethod}
-                    onChange={handleChange}
-                    required
-                    size="sm"
+                <h5>Payment Method</h5>
+                <div className="d-flex justify-content-between mt-3">
+                  <Button
+                    variant="outline-primary"
+                    onClick={() => handlePaymentMethodChange("cod")}
                   >
-                    <option value="">Select...</option>
-                    <option value="cod">Cash on Delivery</option>
-                    <option value="khalti">Khalti</option>
-                    <option value="fonepay">Fonepay</option>
-                    <option value="imepay">IME Pay</option>
-                  </Form.Control>
-                </Form.Group>
-                <Button variant="primary" type="submit" className="mt-3 btn-sm">
+                    Cash on Delivery
+                  </Button>
+                  <Button
+                    variant="outline-secondary"
+                    onClick={() => handlePaymentMethodChange("khalti")}
+                  >
+                    Khalti
+                  </Button>
+                </div>
+                <Button
+                  variant="primary"
+                  type="submit"
+                  className="mt-3 btn-sm"
+                  disabled={!formData.paymentMethod}
+                >
                   Place Order
                 </Button>
               </Form>
             </Card.Body>
           </Card>
         </Col>
-        <Col md={4}>
+        <Col md={6}>
           <Card>
             <Card.Body>
               <h3>Order Summary</h3>
@@ -125,7 +169,6 @@ const Checkout = () => {
 };
 
 export default Checkout;
-
 
 
 
