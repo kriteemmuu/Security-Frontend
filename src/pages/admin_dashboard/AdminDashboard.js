@@ -77,7 +77,7 @@ const AdminDashboard = () => {
                 <td style={styles.td}>{singleProduct.productPrice}</td>
                 <td style={styles.td}>{singleProduct.productCategory}</td>
                 <td style={styles.td}>{singleProduct.productDescription}</td>
-                <td style={styles.td}>
+                <td style={{ ...styles.td, ...styles.actionCell }}>
                   <Link
                     to={`/admin/update/product/${singleProduct._id}`}
                     style={{ ...styles.button, ...styles.editButton }}
@@ -151,6 +151,11 @@ const styles = {
   },
   img: {
     borderRadius: "4px",
+  },
+  actionCell: {
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
   },
 };
 

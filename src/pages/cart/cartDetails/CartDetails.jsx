@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Container, Row, Col, ListGroup, Button } from "react-bootstrap";
-import { FaTrash } from "react-icons/fa";
+import { FaTrash, FaPlus, FaMinus } from "react-icons/fa";
 
 const CartDetails = () => {
   // Retrieve cart items from localStorage
@@ -11,6 +11,30 @@ const CartDetails = () => {
   // Function to handle item removal from cart
   const handleRemoveFromCart = (productId) => {
     const updatedCart = cart.filter((item) => item.id !== productId);
+    setCart(updatedCart);
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+  };
+
+  // Function to increment the quantity of an item
+  const incrementQuantity = (productId) => {
+    const updatedCart = cart.map((item) => {
+      if (item.id === productId) {
+        return { ...item, quantity: item.quantity + 1 };
+      }
+      return item;
+    });
+    setCart(updatedCart);
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+  };
+
+  // Function to decrement the quantity of an item
+  const decrementQuantity = (productId) => {
+    const updatedCart = cart.map((item) => {
+      if (item.id === productId && item.quantity > 1) {
+        return { ...item, quantity: item.quantity - 1 };
+      }
+      return item;
+    });
     setCart(updatedCart);
     localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
@@ -46,6 +70,12 @@ const CartDetails = () => {
                     </Col>
                     <Col md={3}>
                       <p>Quantity: {item.quantity}</p>
+                      <Button variant="light" size="sm" onClick={() => incrementQuantity(item.id)}>
+                        <FaPlus />
+                      </Button>
+                      <Button variant="light" size="sm" onClick={() => decrementQuantity(item.id)} disabled={item.quantity <= 1}>
+                        <FaMinus />
+                      </Button>
                     </Col>
                     <Col md={1}>
                       <FaTrash

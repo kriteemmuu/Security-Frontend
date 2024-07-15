@@ -8,16 +8,10 @@ const Home = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const handleAddToCart = (product) => {
-    console.log("Product added to cart:", product.name);
-    // Here you can implement the logic to update the cart's state or make an API call
-  };
-
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await getAllHomeProducts();
-
         setProducts(response.data.data);
       } catch (error) {
         console.log(error);
@@ -81,14 +75,6 @@ const Home = () => {
                   <Link to={`/product-details/${product._id}`}>
                     <Button variant="primary">View Product</Button>
                   </Link>
-                  <Button
-                    variant="success"
-                    className="btn-top-space"
-                    style={{ marginLeft: 10 }}
-                    onClick={() => handleAddToCart(product)}
-                  >
-                    Add to Cart
-                  </Button>
                 </Card.Body>
               </Card>
             </Col>
