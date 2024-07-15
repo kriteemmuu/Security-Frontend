@@ -119,6 +119,7 @@ import "./Home.css";
 import { toast } from "react-toastify";
 import { FaHeart, FaEye } from 'react-icons/fa';
 
+
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -173,7 +174,7 @@ const Home = () => {
             src="../assets/images/STORE.jpeg" // Path to the YAY image
              className="graphic-image-border"
             alt="Maternity Graphic"
-            style={{ width: "100%", height: "auto", marginTop: "20px" }}
+            style={{ width: "100%", height: "700px", marginTop: "20px" }}
           />
         </Col>
       </Row>

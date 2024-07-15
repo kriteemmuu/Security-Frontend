@@ -1,0 +1,26 @@
+.contact-us {
+    background-color: #f5ebe1; /* Light beige background */
+    padding: 20px;
+    border-radius: 8px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .contact-us h2 {
+    font-size: 2rem;
+    font-weight: bold;
+  }
+  
+  .contact-us p {
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
+  
+  .contact-us a {
+    color: #5a67d8; /* Purple color for the email link */
+    text-decoration: none;
+  }
+  
+  .contact-us a:hover {
+    text-decoration: underline;
+  }
+  

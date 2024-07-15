@@ -14,6 +14,7 @@ import WishList from "./pages/cart/cartDetails/WishList.jsx";
 import UpdateProduct from "./pages/product/UpdateProduct.jsx";
 import CartDetails from "./pages/cart/cartDetails/CartDetails.jsx";
 import Search from "./pages/homepage/Search.jsx";
+import ContactUs from "./pages/homepage/ContactUs.jsx";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route path="/add/product" element={<Product />} />
           <Route path="/admin/update/product/:id" element={<UpdateProduct />} />
           <Route path="/search" element={<Search />} />
+          <Route path="/contact-us" element={<ContactUs />} />
 
         </Routes>
       </Router>
