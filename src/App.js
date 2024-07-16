@@ -16,9 +16,13 @@ import CartDetails from "./pages/cart/cartDetails/CartDetails.jsx";
 import Search from "./pages/homepage/Search.jsx";
 import ContactUs from "./pages/homepage/ContactUs.jsx";
 import Checkout from "./pages/cart/cartDetails/Checkout.jsx";
+import Khalti from "./components/khalti/Khalti.js";
+
+
 
 function App() {
   return (
+    
     <>
       <Router>
         <ToastContainer />
@@ -37,6 +41,7 @@ function App() {
           <Route path="/search" element={<Search />} />
           <Route path="/contact-us" element={<ContactUs />} />
           <Route path="/check-out" element={<Checkout />} />
+          <Route path="/khalti" element={<Khalti />} />
           
 
         </Routes>

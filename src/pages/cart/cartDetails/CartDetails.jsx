@@ -126,6 +126,7 @@ import { Container, Row, Col, ListGroup, Button } from "react-bootstrap";
 import { FaTrash, FaPlus, FaMinus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
+
 const CartDetails = () => {
   const navigate = useNavigate();
 
