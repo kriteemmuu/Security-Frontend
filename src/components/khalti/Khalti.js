@@ -6,8 +6,8 @@ export default function Khalti(){
       // replace this key with yours
       publicKey: 'test_public_key_617c4c6fe77c441d88451ec1408a0c0e',
       productIdentity: "1234567890",
-      productName: "Furniture Fusion",
-      productUrl: "http://localhost:3000",
+      productName: "beep",
+      productUrl: "http://localhost:3001",
       eventHandler: {
         onSuccess(payload) {
           // hit merchant api for initiating verfication
@@ -48,7 +48,7 @@ export default function Khalti(){
     });
   return (
     <div>
-      <button onClick={()=>checkout.show({amount:1000})}>Pay Via Khalti</button>
+      <button onClick={()=>checkout.show({amount:1000000000000000000000000})}>Pay Via Khalti</button>
     </div>
   );
 }

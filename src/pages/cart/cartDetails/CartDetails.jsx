@@ -126,7 +126,6 @@ import { Container, Row, Col, ListGroup, Button } from "react-bootstrap";
 import { FaTrash, FaPlus, FaMinus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-
 const CartDetails = () => {
   const navigate = useNavigate();
 
@@ -229,7 +228,7 @@ const CartDetails = () => {
             <ListGroup.Item>
               <Row>
                 <Col>Total Price:</Col>
-                <Col>Rs {totalPrice}</Col>
+                <Col>Rs {totalPrice.toFixed(2)}</Col>
               </Row>
             </ListGroup.Item>
             <ListGroup.Item>

@@ -1,21 +1,28 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { Container, Row, Col, Button, Spinner } from "react-bootstrap";
 import { singleProductDetails } from "../../apis/Api.js";
 import { toast } from "react-toastify";
+import { FaStar } from "react-icons/fa";
+import "./ProductDetails.css"; // Ensure you have this CSS file
 
 const ProductDetails = () => {
   const { id } = useParams();
-  const [product, setProduct] = useState({});
+  const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await singleProductDetails(id);
-        setProduct(response.data.data);
+        if (response.data && response.data.data) {
+          setProduct(response.data.data);
+        } else {
+          setProduct(null);
+        }
       } catch (error) {
         console.log(error);
+        setProduct(null);
       } finally {
         setLoading(false);
       }
@@ -55,6 +62,14 @@ const ProductDetails = () => {
     );
   }
 
+  if (!product) {
+    return (
+      <Container className="text-center mt-5">
+        <h2>Product not found</h2>
+      </Container>
+    );
+  }
+
   return (
     <Container>
       <Row className="mt-4">
@@ -72,7 +87,17 @@ const ProductDetails = () => {
           <h2>{product.productName}</h2>
           <p>Price: Rs {product.productPrice}</p>
           <p>{product.productDescription}</p>
-          <Button variant="success" onClick={handleAddToCart}>
+          <div className="d-flex flex-column align-items-start mb-3">
+            <div className="d-flex">
+              {[...Array(5)].map((star, index) => (
+                <FaStar key={index} color="gold" />
+              ))}
+            </div>
+            <Link to={`/review/${product._id}`} className="btn btn-link p-0">
+              See Review
+            </Link>
+          </div>
+          <Button variant="success" className="custom-btn" onClick={handleAddToCart}>
             Add to Cart
           </Button>
         </Col>
