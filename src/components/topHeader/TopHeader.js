@@ -90,7 +90,14 @@
 
 // export default TopHeader;
 
-import { Navbar, Nav, NavDropdown, Container, Badge, Button } from "react-bootstrap";
+import {
+  Navbar,
+  Nav,
+  NavDropdown,
+  Container,
+  Badge,
+  Button,
+} from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
@@ -114,8 +121,8 @@ const TopHeader = () => {
     };
 
     updateWishlistCount();
-    window.addEventListener('storage', updateWishlistCount);
-    return () => window.removeEventListener('storage', updateWishlistCount);
+    window.addEventListener("storage", updateWishlistCount);
+    return () => window.removeEventListener("storage", updateWishlistCount);
   }, []);
 
   const handleLogout = () => {
@@ -133,46 +140,86 @@ const TopHeader = () => {
   };
 
   return (
-    <Navbar bg="light" expand="lg">
+    <Navbar bg="light" expand="lg" fixed="top">
       <Container>
         <Navbar.Brand as={Link} to="/">
-          <img src="/assets/images/bump.png" alt="" style={{ height: "40px", marginRight: "10px", width: "60px" }} />
+          <img
+            src="/assets/images/bump.png"
+            alt="DivImg"
+            style={{ height: "auto", marginRight: "10px", width: "50px" }}
+          />
           Diva <span style={{ color: "purple" }}>Maternity Store</span>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link as={Link} to="/">Home</Nav.Link>
+            <Nav.Link as={Link} to="/">
+              Home
+            </Nav.Link>
             <Nav.Link as={Link} to="/contact-us">
               <FaPhoneAlt className="mr-1" /> Contact
             </Nav.Link>
           </Nav>
-          <Button variant="outline-secondary" onClick={handleGoToSearch} className="mx-2">
+          <Button
+            variant="outline-secondary"
+            onClick={handleGoToSearch}
+            className="mx-2"
+          >
             <FaSearch />
           </Button>
           <Nav className="d-flex align-items-center">
-            <Nav.Link as={Link} to="/wishlist" className="position-relative mx-2">
+            <Nav.Link
+              as={Link}
+              to="/wishlist"
+              className="position-relative mx-2"
+            >
               <FaHeart />
-              <Badge pill bg="danger" style={{ position: "absolute", top: "-5px", right: "-10px" }}>
+              <Badge
+                pill
+                bg="danger"
+                style={{ position: "absolute", top: "-5px", right: "-10px" }}
+              >
                 {wishlistCount}
               </Badge>
             </Nav.Link>
-            <Nav.Link as={Link} to="/cart-details" className="position-relative mx-3">
+            <Nav.Link
+              as={Link}
+              to="/cart-details"
+              className="position-relative mx-3"
+            >
               <FaShoppingCart />
-              <Badge pill bg="danger" style={{ position: "absolute", top: "-5px", right: "-10px" }}>
+              <Badge
+                pill
+                bg="danger"
+                style={{ position: "absolute", top: "-5px", right: "-10px" }}
+              >
                 {cart.length}
               </Badge>
             </Nav.Link>
           </Nav>
           {!user ? (
             <Nav className="ml-auto">
-              <Nav.Link as={Link} to="/login">Login</Nav.Link>
+              <Nav.Link as={Link} to="/login">
+                Login
+              </Nav.Link>
             </Nav>
           ) : (
-            <NavDropdown title={`Welcome, ${user?.firstName}!`} id="basic-nav-dropdown" className="ml-3">
-              <NavDropdown.Item as={Link} to="/profile">Profile</NavDropdown.Item>
-              {user?.role === "admin" && <NavDropdown.Item as={Link} to="/admin_dashboard">Dashboard</NavDropdown.Item>}
-              <NavDropdown.Item as={Link} to="#">Settings</NavDropdown.Item>
+            <NavDropdown
+              title={`Welcome, ${user?.firstName}!`}
+              id="basic-nav-dropdown"
+              className="ml-3"
+            >
+              <NavDropdown.Item as={Link} to="/profile">
+                Profile
+              </NavDropdown.Item>
+              {user?.role === "admin" && (
+                <NavDropdown.Item as={Link} to="/admin_dashboard">
+                  Dashboard
+                </NavDropdown.Item>
+              )}
+              <NavDropdown.Item as={Link} to="#">
+                Settings
+              </NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
             </NavDropdown>

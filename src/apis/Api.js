@@ -47,6 +47,8 @@ export const singleProductDetails = (id) => Api.get(`/api/product/single-product
 
 // Get All Products API
 export const getAllProducts = () => Api.get("/api/product/get_all_products", config).catch(handleApiError);
+export const getAllUsers = () => Api.get("/api/user/all-adminUsers", config).catch(handleApiError);
+
 
 // Get Single Product API
 export const getSingleProductApi = (id) => Api.get(`/api/product/get_single_product/${id}`, config).catch(handleApiError);

@@ -69,7 +69,13 @@ const Login = () => {
   };
 
   return (
-    <div className="container">
+    <div
+      className="container mt-12"
+      style={{
+        marginBottom: "3rem",
+        marginTop: "8rem",
+      }}
+    >
       <div className="d-flex justify-content-center mt-5">
         <img
           src="/assets/images/pregnancy.png"

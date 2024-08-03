@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { createProductApi } from "../../apis/Api.js";
+import { FaArrowLeft } from "react-icons/fa";
 
 const AddProduct = () => {
   const navigate = useNavigate();
@@ -87,8 +88,16 @@ const AddProduct = () => {
 
   return (
     <div className="container mt-5" style={containerStyle}>
-      <h2 style={headingStyle}>Add Product</h2>
-      <div className="row">
+      <div className="d-flex align-items-center">
+        <Link
+          to="/admin_dashboard/all-productsList"
+          className="text-decoration-none me-3"
+        >
+          <FaArrowLeft />
+        </Link>
+        <h2 className="mb-0">Add Product</h2>
+      </div>
+      <div className="row" style={{ marginTop: "10px" }}>
         <div className="col-md-6">
           <form onSubmit={handleAdd}>
             <div className="mb-3">
@@ -130,7 +139,8 @@ const AddProduct = () => {
                 id="productCategory"
                 style={formControlStyle}
               >
-                <option value=" Essential">Essentials</option>
+                <option value="">Select your category</option>
+                <option value="Essential">Essentials</option>
                 <option value="toys ">Toy</option>
                 <option value="cloth">Clothing</option>
                 <option value="Others">Other Products</option>

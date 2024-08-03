@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getSingleProductApi, updateProduct } from "../../apis/Api.js";
+import { FaArrowLeft } from "react-icons/fa";
 const UpdateProduct = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -83,10 +84,16 @@ const UpdateProduct = () => {
 
   return (
     <div className="container mt-3">
-      <h2>
-        Update product for <span className="text-primary">{productName}</span>
-      </h2>
-      <div className="d-flex gap-3">
+      <div className="d-flex align-items-center">
+        <Link
+          to="/admin_dashboard/all-productsList"
+          className="text-decoration-none me-3"
+        >
+          <FaArrowLeft />
+        </Link>
+        <h2 className="mb-0">Update Product</h2>
+      </div>
+      <div className="d-flex gap-3" style={{ marginTop: "4rem" }}>
         <form>
           <label>Product Name</label>
           <input
