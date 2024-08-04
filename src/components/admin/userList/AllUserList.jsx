@@ -56,7 +56,7 @@ const AllUserList = () => {
                 <td>{user.updatedAt}</td>
                 <td>
                   <Link
-                    to={`/admin_dashboard/admin/update/user/${user._id}`}
+                    to={`/admin_dashboard/single-userData/${user._id}`}
                     className="btn btn-primary btn-sm me-2"
                   >
                     <FaEye />

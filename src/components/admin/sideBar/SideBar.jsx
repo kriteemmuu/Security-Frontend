@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Nav } from "react-bootstrap";
 import { FaBox, FaUsers, FaList, FaEye, FaSignOutAlt } from "react-icons/fa";
+import { MdOutlineDashboardCustomize } from "react-icons/md";
 
 const SideBar = () => {
   const navigate = useNavigate();
@@ -17,6 +18,15 @@ const SideBar = () => {
             <h1 className="text-white mb-4">Diva Maternity</h1>
           </Link>
           <Nav className="flex-column">
+            <Nav.Item className="mb-3">
+              <Link
+                to="/admin_dashboard/admin-dashboard-stats"
+                className="text-white d-flex align-items-center text-decoration-none"
+              >
+                <MdOutlineDashboardCustomize className="me-2" />
+                Dashboard
+              </Link>
+            </Nav.Item>
             <Nav.Item className="mb-3">
               <Link
                 to="/admin_dashboard/all-productsList"

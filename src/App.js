@@ -29,6 +29,8 @@ import AllUserList from "./components/admin/userList/AllUserList.jsx";
 import { lazy, Suspense } from "react";
 import SkeletonLoading from "./components/layout/skeletonLoading/SkeletonLoading.jsx";
 import PrivateRoute from "./components/layout/privateRoute/PrivateRoute.jsx";
+import DashBoard from "./components/admin/dashboardGrid/DashBoard.jsx";
+import SingleUserData from "./components/admin/singleUserData/SingleUserData.jsx";
 
 const AppContent = () => {
   const location = useLocation();
@@ -59,12 +61,14 @@ const AppContent = () => {
           <Route
             path="/admin_dashboard/*"
             element={
-              <PrivateRoute userRole={user?.role === "admin"}>
+              <PrivateRoute admin={true} userRole={user?.role === "admin"}>
                 <MainLayout />
               </PrivateRoute>
             }
           >
             <Route path="all-productsList" element={<AdminProductList />} />
+            <Route path="single-userData/:id" element={<SingleUserData />} />
+            <Route path="admin-dashboard-stats" element={<DashBoard />} />
             <Route path="all-usersList" element={<AllUserList />} />
             <Route path="add/product" element={<Product />} />
             <Route

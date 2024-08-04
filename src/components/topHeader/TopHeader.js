@@ -140,7 +140,7 @@ const TopHeader = () => {
   };
 
   return (
-    <Navbar bg="light" expand="lg" fixed="top">
+    <Navbar bg="light" expand="lg">
       <Container>
         <Navbar.Brand as={Link} to="/">
           <img

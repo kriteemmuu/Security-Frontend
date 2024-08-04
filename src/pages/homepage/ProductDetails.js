@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Container, Row, Col, Button, Spinner } from "react-bootstrap";
 import { singleProductDetails } from "../../apis/Api.js";
 import { toast } from "react-toastify";
 import { FaStar } from "react-icons/fa";
-import "./ProductDetails.css"; // Ensure you have this CSS file
+import "./ProductDetails.css";
+import AddRatingReview from "../addRatingReview/AddRatingReview.jsx";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -71,38 +72,44 @@ const ProductDetails = () => {
   }
 
   return (
-    <Container>
-      <Row className="mt-4">
-        <span>
-          {product.productName}/{product.productCategory}
-        </span>
-        <Col md={6}>
-          <img
-            src={`http://localhost:3001/products/${product.productImage}`}
-            alt={product.productName}
-            className="img-fluid"
-          />
-        </Col>
-        <Col md={6}>
-          <h2>{product.productName}</h2>
-          <p>Price: Rs {product.productPrice}</p>
-          <p>{product.productDescription}</p>
-          <div className="d-flex flex-column align-items-start mb-3">
-            <div className="d-flex">
-              {[...Array(5)].map((star, index) => (
-                <FaStar key={index} color="gold" />
-              ))}
+    <>
+      <Container style={{ marginTop: "4rem" }}>
+        <Row className="mt-4">
+          <span>
+            {product.productName}/{product.productCategory}
+          </span>
+          <Col md={6}>
+            <img
+              src={`http://localhost:3001/products/${product.productImage}`}
+              alt={product.productName}
+              className="img-fluid"
+            />
+          </Col>
+          <Col md={6}>
+            <h2>{product.productName}</h2>
+            <p>Price: Rs {product.productPrice}</p>
+            <p>{product.productDescription}</p>
+            <div className="d-flex flex-column align-items-start mb-3">
+              <div className="d-flex">
+                {[...Array(5)].map((star, index) => (
+                  <FaStar key={index} color="gold" />
+                ))}
+              </div>
             </div>
-            <Link to={`/review/${product._id}`} className="btn btn-link p-0">
-              See Review
-            </Link>
-          </div>
-          <Button variant="success" className="custom-btn" onClick={handleAddToCart}>
-            Add to Cart
-          </Button>
-        </Col>
-      </Row>
-    </Container>
+            <Button
+              variant="success"
+              className="custom-btn"
+              onClick={handleAddToCart}
+            >
+              Add to Cart
+            </Button>
+          </Col>
+        </Row>
+      </Container>
+      <div style={{ marginTop: "4rem" }}>
+        <AddRatingReview id={id} />
+      </div>
+    </>
   );
 };
 
