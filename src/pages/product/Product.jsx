@@ -8,6 +8,7 @@ const AddProduct = () => {
   const navigate = useNavigate();
 
   const [productName, setProductName] = useState("");
+  const [inStock, setInStock] = useState("");
   const [productPrice, setProductPrice] = useState("");
   const [productCategory, setProductCategory] = useState("");
   const [productDescription, setProductDescription] = useState("");
@@ -42,6 +43,7 @@ const AddProduct = () => {
 
     const formData = new FormData();
     formData.append("productName", productName);
+    formData.append("inStock", inStock);
     formData.append("productPrice", productPrice);
     formData.append("productCategory", productCategory);
     formData.append("productDescription", productDescription);
@@ -55,7 +57,7 @@ const AddProduct = () => {
 
       if (res.status === 201) {
         toast.success(res.data.message);
-        navigate("/admin_dashboard");
+        navigate("/admin_dashboard/all-productsList");
       }
     } catch (error) {
       setLoading(false);
@@ -145,6 +147,20 @@ const AddProduct = () => {
                 <option value="cloth">Clothing</option>
                 <option value="Others">Other Products</option>
               </select>
+            </div>
+            <div className="mb-3">
+              <label htmlFor="productName" style={labelStyle}>
+                Product Stock
+              </label>
+              <input
+                value={inStock}
+                onChange={(e) => setInStock(e.target.value)}
+                className="form-control"
+                type="number"
+                id="inStock"
+                placeholder="Enter your product name"
+                style={formControlStyle}
+              />
             </div>
             <div className="mb-3">
               <label htmlFor="productDescription" style={labelStyle}>

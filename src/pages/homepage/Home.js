@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { getAllProducts } from "../../apis/Api.js";
 import "./Home.css";
 import { toast } from "react-toastify";
-import { FaHeart, FaEye } from 'react-icons/fa';
+import { FaHeart, FaEye } from "react-icons/fa";
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -15,21 +15,23 @@ const Home = () => {
     const fetchData = async () => {
       try {
         const response = await getAllProducts();
-        console.log("Full API response:", response); // Log the entire response
-        console.log("API response data:", response.data); // Log the data part of the response
 
-        // Adjust the condition based on the actual structure of the response data
         if (response && response.data && Array.isArray(response.data.data)) {
           setProducts(response.data.data);
-        } else if (response && response.data && response.data.products && Array.isArray(response.data.products)) {
-          // Adjust this based on actual response structure
+        } else if (
+          response &&
+          response.data &&
+          response.data.products &&
+          Array.isArray(response.data.products)
+        ) {
           setProducts(response.data.products);
         } else {
           toast.error("Unexpected response format.");
         }
 
-        const savedWishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-        setWishlist(savedWishlist.map(item => item._id));
+        const savedWishlist =
+          JSON.parse(localStorage.getItem("wishlist")) || [];
+        setWishlist(savedWishlist.map((item) => item._id));
       } catch (error) {
         console.error("Failed to fetch products:", error);
         toast.error("Error fetching products.");
@@ -42,17 +44,22 @@ const Home = () => {
   }, []);
 
   const handleAddToWishlist = (product) => {
-    const existing = wishlist.find(id => id === product._id);
+    const existing = wishlist.find((id) => id === product._id);
     if (existing) {
       toast.info("Item already in Wishlist");
       return;
     }
 
     const updatedWishlist = [...wishlist, product._id];
-    localStorage.setItem("wishlist", JSON.stringify(updatedWishlist.map(id => ({
-      _id: id,
-      ...products.find(p => p._id === id)
-    }))));
+    localStorage.setItem(
+      "wishlist",
+      JSON.stringify(
+        updatedWishlist.map((id) => ({
+          _id: id,
+          ...products.find((p) => p._id === id),
+        }))
+      )
+    );
     setWishlist(updatedWishlist);
     toast.success("Added to Wishlist!");
   };
@@ -61,9 +68,11 @@ const Home = () => {
     <Container>
       <Row className="mt-4">
         <Col className="text-center">
-          <h2 className="heading-text">Enhancing The Beauty Of Motherhood Through Fashion</h2>
-          <img 
-            src="../assets/images/YAY.png" // Replace with your actual image URL
+          <h2 className="heading-text">
+            Enhancing The Beauty Of Motherhood Through Fashion
+          </h2>
+          <img
+            src="../assets/images/YAY.png"
             alt="Maternity Graphic"
             style={{ width: "100%", height: "auto", marginTop: "20px" }}
           />
@@ -86,6 +95,13 @@ const Home = () => {
             <Col md={4} className="mb-4" key={product._id}>
               <Card className="card-custom">
                 <Card.Img
+                  style={{
+                    width: "300px",
+                    height: "300px",
+                    objectFit: "contain",
+                    display: "block", 
+                    margin: "0 auto", 
+                  }}
                   variant="top"
                   src={`http://localhost:3001/products/${product.productImage}`}
                   alt={product.productName}
@@ -96,13 +112,20 @@ const Home = () => {
                   <Card.Text>Price: Rs {product.productPrice}</Card.Text>
                   <div className="d-flex justify-content-between">
                     <Link to={`/product-details/${product._id}`}>
-                      <Button variant="primary" className="d-flex align-items-center">
+                      <Button
+                        variant="primary"
+                        className="d-flex align-items-center"
+                      >
                         <FaEye className="mr-2" /> View Product
                       </Button>
                     </Link>
-                    <Button variant="link"
-                            className={`text-${wishlist.includes(product._id) ? 'danger' : 'secondary'}`}
-                            onClick={() => handleAddToWishlist(product)}>
+                    <Button
+                      variant="link"
+                      className={`text-${
+                        wishlist.includes(product._id) ? "danger" : "secondary"
+                      }`}
+                      onClick={() => handleAddToWishlist(product)}
+                    >
                       <FaHeart size={24} />
                     </Button>
                   </div>
@@ -111,7 +134,9 @@ const Home = () => {
             </Col>
           ))
         ) : (
-          <Col className="text-center"><h1>No Data Found</h1></Col>
+          <Col className="text-center">
+            <h1>No Data Found</h1>
+          </Col>
         )}
       </Row>
     </Container>

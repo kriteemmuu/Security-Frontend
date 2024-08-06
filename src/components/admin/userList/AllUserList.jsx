@@ -6,14 +6,17 @@ import { FaEye, FaTrash } from "react-icons/fa";
 const AllUserList = () => {
   const [users, setUsers] = useState([]);
 
+  const fetchedData = async () => {
+    try {
+      const res = await getAllUsers();
+      setUsers(res.data.users);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
-    getAllUsers()
-      .then((res) => {
-        setUsers(res.data.users);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    fetchedData();
   }, []);
 
   const handleDeleteProduct = (id) => {

@@ -59,6 +59,9 @@ export const addRatingReview = (data) => {
 };
 
 // Get Single Product Details
+
+export const getAllReviews = (id) =>
+  Api.get(`/api/product/getReviews?id=${id}`).catch(handleApiError);
 export const singleProductDetails = (id) =>
   Api.get(`/api/product/single-productDetail/${id}`).catch(handleApiError);
 

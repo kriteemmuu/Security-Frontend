@@ -57,7 +57,7 @@ const AdminProductList = () => {
             <th style={styles.th}>Name</th>
             <th style={styles.th}>Price</th>
             <th style={styles.th}>Category</th>
-            <th style={styles.th}>Description</th>
+            <th style={styles.th}>InStock</th>
             <th style={styles.th}>Created At</th>
             <th style={styles.th}>Actions</th>
           </tr>
@@ -78,7 +78,7 @@ const AdminProductList = () => {
                 <td style={styles.td}>{singleProduct.productName}</td>
                 <td style={styles.td}>{singleProduct.productPrice}</td>
                 <td style={styles.td}>{singleProduct.productCategory}</td>
-                <td style={styles.td}>{singleProduct.productDescription}</td>
+                <td style={styles.td}>{singleProduct.inStock}</td>
                 <td style={styles.td}>{singleProduct.createdAt}</td>
                 <td style={{ ...styles.td, ...styles.actionCell }}>
                   <Link

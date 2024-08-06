@@ -61,7 +61,7 @@ const AppContent = () => {
           <Route
             path="/admin_dashboard/*"
             element={
-              <PrivateRoute admin={true} userRole={user?.role === "admin"}>
+              <PrivateRoute userRole={user?.role === "admin"}>
                 <MainLayout />
               </PrivateRoute>
             }

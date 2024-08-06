@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Container, Row, Col, Form, Button, Card } from "react-bootstrap";
-import { addRatingReview } from "../../apis/Api";
+import { addRatingReview, getAllReviews } from "../../apis/Api";
 import { toast } from "react-toastify";
 import PropTypes from "prop-types";
 
@@ -8,6 +8,8 @@ const AddRatingReview = ({ id }) => {
   const [rating, setRating] = useState("");
   const [comment, setComment] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [reviews, setReviews] = useState([]);
+  let token = localStorage.getItem("token")
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,16 +20,46 @@ const AddRatingReview = ({ id }) => {
 
     setIsLoading(true);
     try {
-      const data = { productId: id, rating, comment };
-      await addRatingReview(data);
-      toast.success("Review added successfully!");
-      setRating("");
-      setComment("");
+      if(token){
+          const data = { productId: id, rating, comment };
+          await addRatingReview(data);
+          toast.success("Review added successfully!");
+          setRating("");
+          setComment("");
+          await fetchedData();
+      }else{
+        toast.error("Please Login first")
+        return
+      }
     } catch (error) {
       toast.error("Failed to add review. Please try again.");
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const fetchedData = async () => {
+    try {
+      const res = await getAllReviews(id);
+      setReviews(res.data.reviews);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchedData();
+  }, []);
+
+  const renderStars = (rating) => {
+    return Array.from({ length: 5 }, (_, index) => (
+      <span
+        key={index}
+        style={{ color: index < rating ? "#ffc107" : "#e4e5e9" }}
+      >
+        ★
+      </span>
+    ));
   };
 
   return (
@@ -38,7 +70,19 @@ const AddRatingReview = ({ id }) => {
           <Card>
             <Card.Header>Ratings and Reviews</Card.Header>
             <Card.Body>
-              <p>No ratings or reviews yet.</p>
+              {reviews.length === 0 ? (
+                <p>No ratings or reviews yet.</p>
+              ) : (
+                reviews.map((review) => (
+                  <div key={review._id} style={{ marginBottom: "10px" }}>
+                    <div>
+                      <strong>{`${review.firstName} ${review.lastName}`}</strong>
+                    </div>
+                    <div>{renderStars(review.rating)}</div>
+                    <div>{review.comment}</div>
+                  </div>
+                ))
+              )}
             </Card.Body>
           </Card>
         </Col>
@@ -91,7 +135,7 @@ const AddRatingReview = ({ id }) => {
 };
 
 AddRatingReview.propTypes = {
-  id: PropTypes.string,
+  id: PropTypes.string.isRequired,
 };
 
 export default AddRatingReview;

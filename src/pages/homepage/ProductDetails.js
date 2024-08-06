@@ -3,9 +3,39 @@ import { useParams } from "react-router-dom";
 import { Container, Row, Col, Button, Spinner } from "react-bootstrap";
 import { singleProductDetails } from "../../apis/Api.js";
 import { toast } from "react-toastify";
-import { FaStar } from "react-icons/fa";
 import "./ProductDetails.css";
 import AddRatingReview from "../addRatingReview/AddRatingReview.jsx";
+import PropTypes from "prop-types";
+
+const StarRating = ({ rating }) => {
+  const totalStars = 5;
+  const filledStars = Math.floor(rating);
+  const halfStar = rating % 1 !== 0;
+  const emptyStars = totalStars - filledStars - (halfStar ? 1 : 0);
+
+  return (
+    <div className="star-rating">
+      {Array(filledStars)
+        .fill()
+        .map((_, index) => (
+          <span key={index} className="star filled">
+            ★
+          </span>
+        ))}
+      {halfStar && <span className="star half">★</span>}
+      {Array(emptyStars)
+        .fill()
+        .map((_, index) => (
+          <span key={index} className="star empty">
+            ☆
+          </span>
+        ))}
+    </div>
+  );
+};
+StarRating.propTypes = {
+  rating: PropTypes.number.isRequired,
+};
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -87,18 +117,27 @@ const ProductDetails = () => {
           </Col>
           <Col md={6}>
             <h2>{product.productName}</h2>
-            <p>Price: Rs {product.productPrice}</p>
+            <p style={{ fontSize: "20px" }}>Price: Rs {product.productPrice}</p>
+
             <p>{product.productDescription}</p>
             <div className="d-flex flex-column align-items-start mb-3">
-              <div className="d-flex">
-                {[...Array(5)].map((star, index) => (
-                  <FaStar key={index} color="gold" />
-                ))}
+              <div className="d-flex align-items-center">
+                <StarRating rating={product?.ratings || 0} />
+                <span className="ml-2">({product?.numOfReviews})</span>
               </div>
             </div>
+            <h2
+              style={{
+                fontSize: "16px",
+                color: product.inStock ? "green" : "red",
+              }}
+            >
+              Stock: {product.inStock ? "InStock" : "OutOfStock"}
+            </h2>
+
             <Button
               variant="success"
-              className="custom-btn"
+              className="custom-btn mt-4"
               onClick={handleAddToCart}
             >
               Add to Cart
