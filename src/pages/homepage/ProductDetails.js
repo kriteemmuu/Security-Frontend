@@ -37,7 +37,7 @@ StarRating.propTypes = {
   rating: PropTypes.number.isRequired,
 };
 
-const ProductDetails = () => {
+const ProductDetails = ({ updateCartCount }) => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -63,24 +63,44 @@ const ProductDetails = () => {
   }, [id]);
 
   const handleAddToCart = () => {
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const existingProductIndex = cart.findIndex(
-      (item) => item.id === product._id
-    );
-    if (existingProductIndex >= 0) {
-      cart[existingProductIndex].quantity += 1;
-    } else {
-      cart.push({
-        id: product._id,
-        productName: product.productName,
-        productPrice: product.productPrice,
-        productImage: product.productImage,
-        quantity: 1,
-      });
-    }
+    if (product.inStock > 0) {
+      const user = JSON.parse(localStorage.getItem("user"));
 
-    localStorage.setItem("cart", JSON.stringify(cart));
-    toast.success("Item added to cart!");
+      if (!user || !user._id) {
+        toast.error("User not logged in!");
+        return;
+      }
+
+      const userId = user._id;
+
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+      const existingProductIndex = cart.findIndex(
+        (item) => item.userId === userId && item.productId === product._id
+      );
+
+      if (existingProductIndex >= 0) {
+        cart[existingProductIndex].quantity += 1;
+      } else {
+        cart.push({
+          userId: userId,
+          productId: product._id,
+          productName: product.productName,
+          productPrice: product.productPrice,
+          productImage: product.productImage,
+          quantity: 1,
+        });
+      }
+
+      localStorage.setItem("cart", JSON.stringify(cart));
+
+      toast.success("Item added to cart!");
+      if (updateCartCount) {
+        updateCartCount();
+      }
+    } else {
+      return toast.warn("Product is Out of Stock");
+    }
   };
 
   if (loading) {
@@ -150,6 +170,10 @@ const ProductDetails = () => {
       </div>
     </>
   );
+};
+
+ProductDetails.propTypes = {
+  updateCartCount: PropTypes.func.isRequired,
 };
 
 export default ProductDetails;

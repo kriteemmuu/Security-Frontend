@@ -100,6 +100,9 @@ export const getPaginatedProductsApi = (page, limit) =>
     handleApiError
   );
 
+export const createOrder = (orderData) =>
+  Api.post("/api/order/create-Order", orderData, config).catch(handleApiError);
+
 // Create Cart API
 
 // Add Item to Cart

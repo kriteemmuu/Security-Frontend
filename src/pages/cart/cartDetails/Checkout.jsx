@@ -1,91 +1,178 @@
 import KhaltiCheckout from "khalti-checkout-web";
 import { useState } from "react";
-import { Container, Row, Col, Form, Button, ListGroup, Card } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Form,
+  ListGroup,
+  Card,
+  Button,
+} from "react-bootstrap";
 import { toast } from "react-toastify";
-import { useLocation } from "react-router-dom";
+// import { createOrder } from "../../../apis/Api";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Checkout = () => {
-  const location = useLocation();
-  const { cart, totalPrice } = location.state;
+  const navigate = useNavigate();
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
 
+  const orderItems = cart.map((item) => ({
+    productName: item.productName,
+    price: item.productPrice,
+    quantity: item.quantity,
+    productImg: item.productImage,
+    product: item.productId,
+  }));
+
+  const user = JSON.parse(localStorage.getItem("user"));
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
-    location: "",
+    shippingInfo: {
+      address: "",
+      city: "",
+      province: "",
+      country: "",
+      postalCode: "",
+    },
     paymentMethod: "",
   });
 
+  const {
+    shippingInfo: { address, city, province, country, postalCode },
+    paymentMethod,
+  } = formData;
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prevValue) => ({
+      ...prevValue,
+      shippingInfo: {
+        ...prevValue.shippingInfo,
+        [name]: value,
+      },
+      paymentMethod: name === "paymentMethod" ? value : prevValue.paymentMethod,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    const config = {
+      headers: {
+        authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    };
     try {
-      if (formData.paymentMethod === "khalti") {
+      if (paymentMethod === "Khalti") {
         initiateKhaltiPayment();
-      } else if (formData.paymentMethod === "cod") {
+      } else if (paymentMethod === "Cash On Delivery") {
+        const itemsPrice = totalPrice;
+        const taxPrice = DST;
+        const shippingPrice = shippingCharge;
+        const grandTotal = itemsPrice + taxPrice + shippingPrice;
+
+        const orderData = {
+          shippingInfo: formData.shippingInfo,
+          orderItems,
+          user: user._id,
+          paymentInfo: paymentMethod,
+          itemsPrice,
+          taxPrice,
+          shippingPrice,
+          totalPrice: grandTotal,
+        };
+
+        // Replace with your actual API endpoint
+        await axios.post(
+          `http://localhost:3001/api/order/create-Order`,
+          orderData,
+          config
+        );
+
         toast.success("Order placed successfully!");
-        // Handle COD order placement here
+        navigate("/order-success");
+        localStorage.removeItem("cart");
+        setFormData({
+          shippingInfo: {
+            address: "",
+            city: "",
+            province: "",
+            country: "",
+            postalCode: "",
+          },
+          paymentMethod: "",
+        });
+      } else {
+        toast.error("Please select a payment method.");
       }
     } catch (error) {
       toast.error("Failed to place order.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const initiateKhaltiPayment = () => {
-    let checkout = new KhaltiCheckout({
-        // replace this key with yours
-        publicKey: 'test_public_key_617c4c6fe77c441d88451ec1408a0c0e',
-        productIdentity: "1234567890",
-        productName: "Furniture Fusion",
-        productUrl: "http://localhost:3000",
-        eventHandler: {
-          onSuccess(payload) {
-            // hit merchant api for initiating verfication
-            console.log(payload);
-            let data = {
-              "token": payload.token,
-              "amount": payload.amount
-            };
-            
-            let config = {
-              headers: {'Authorization': 'test_secret_key_3f78fb6364ef4bd1b5fc670ce33a06f5'}
-            };
-            
-            axios.post('https://khalti.com/api/v2/payment/verify/', data, config)
-            .then(response => {
+    const checkout = new KhaltiCheckout({
+      publicKey: "test_public_key_617c4c6fe77c441d88451ec1408a0c0e",
+      productIdentity: "1234567890",
+      productName: "Furniture Fusion",
+      productUrl: "http://localhost:3000",
+      eventHandler: {
+        onSuccess(payload) {
+          const data = {
+            token: payload.token,
+            amount: payload.amount,
+          };
+
+          const config = {
+            headers: {
+              Authorization: "test_secret_key_3f78fb6364ef4bd1b5fc670ce33a06f5",
+            },
+          };
+
+          axios
+            .post("https://khalti.com/api/v2/payment/verify/", data, config)
+            .then((response) => {
               console.log(response.data);
+              toast.success("Payment Successful!");
+              // Add logic to handle successful payment and order confirmation
             })
-            .catch(error => {
+            .catch((error) => {
               console.log(error);
+              toast.error("Payment Verification Failed.");
             });
-          },
-          // onError handler is optional
-          onError(error) {
-            // handle errors
-            console.log(error);
-          },
-          onClose() {
-            console.log("widget is closing");
-          },
         },
-        paymentPreference: [
-          "KHALTI",
-          "EBANKING",
-          "MOBILE_BANKING",
-          "CONNECT_IPS",
-          "SCT",
-        ],
-      });
-    checkout.show({ amount: totalPrice * 100 });
+        onError(error) {
+          console.log(error);
+        },
+        onClose() {
+          console.log("widget is closing");
+        },
+      },
+      paymentPreference: [
+        "KHALTI",
+        "EBANKING",
+        "MOBILE_BANKING",
+        "CONNECT_IPS",
+        "SCT",
+      ],
+    });
+    checkout.show({ amount: grandTotal * 100 });
   };
 
-  const handlePaymentMethodChange = (method) => {
-    setFormData({ ...formData, paymentMethod: method });
-  };
+  // Calculate total price
+  const totalPrice = cart.reduce(
+    (acc, item) => acc + item.productPrice * item.quantity,
+    0
+  );
+
+  // Calculate DST tax (2%) and add shipping charge (Rs 100)
+  const DST = totalPrice * 0.02;
+  const shippingCharge = 100;
+  const grandTotal = totalPrice + DST + shippingCharge;
 
   return (
     <Container className="mt-5">
@@ -93,91 +180,169 @@ const Checkout = () => {
         <Col md={6}>
           <Card>
             <Card.Body>
-              <h2>Checkout</h2>
               <Form onSubmit={handleSubmit}>
+                <h3>Personal Details</h3>
                 <Form.Group controlId="formName" className="mb-3">
-                  <Form.Label>Name</Form.Label>
+                  <Form.Label>FullName</Form.Label>
                   <Form.Control
                     type="text"
                     name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                    size="sm"
+                    value={`${user?.firstName} ${user?.lastName}`}
+                    readOnly
+                    size="md"
+                  />
+                </Form.Group>
+                <Form.Group controlId="formEmail" className="mb-3">
+                  <Form.Label>Email</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="email"
+                    value={user?.email}
+                    readOnly
+                    size="md"
                   />
                 </Form.Group>
                 <Form.Group controlId="formPhone" className="mb-3">
                   <Form.Label>Phone Number</Form.Label>
                   <Form.Control
-                    type="tel"
+                    type="number"
                     name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    required
-                    size="sm"
+                    value={user?.phone}
+                    readOnly
+                    size="md"
                   />
                 </Form.Group>
-                <Form.Group controlId="formLocation" className="mb-3">
-                  <Form.Label>Location</Form.Label>
+                <h5 style={{ marginTop: "2rem" }}>Shipping Information</h5>
+                <Form.Group controlId="formAddress" className="mb-3">
+                  <Form.Label>Address</Form.Label>
                   <Form.Control
                     type="text"
-                    name="location"
-                    value={formData.location}
+                    name="address"
+                    value={address}
                     onChange={handleChange}
+                    placeholder="Enter address"
                     required
-                    size="sm"
+                    size="md"
                   />
                 </Form.Group>
-                <h5>Payment Method</h5>
-                <div className="d-flex justify-content-between mt-3">
-                  <Button
-                    variant="outline-primary"
-                    onClick={() => handlePaymentMethodChange("cod")}
+                <Form.Group controlId="formCity" className="mb-3">
+                  <Form.Label>City</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="city"
+                    value={city}
+                    onChange={handleChange}
+                    placeholder="Enter City"
+                    required
+                    size="md"
+                  />
+                </Form.Group>
+                <Form.Group controlId="formState" className="mb-3">
+                  <Form.Label>Province</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="province"
+                    value={province}
+                    onChange={handleChange}
+                    placeholder="Enter Province"
+                    required
+                    size="md"
+                  />
+                </Form.Group>
+                <Form.Group controlId="formCountry" className="mb-3">
+                  <Form.Label>Country</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="country"
+                    value={country}
+                    onChange={handleChange}
+                    placeholder="Enter Country"
+                    required
+                    size="md"
+                  />
+                </Form.Group>
+                <Form.Group controlId="formPinCode" className="mb-3">
+                  <Form.Label>Postal Code</Form.Label>
+                  <Form.Control
+                    type="number"
+                    name="postalCode"
+                    value={postalCode}
+                    onChange={handleChange}
+                    required
+                    placeholder="Enter Postal Code"
+                    size="md"
+                  />
+                </Form.Group>
+                <h5>Select Payment Method</h5>
+                <Form.Group controlId="formPaymentMethod" className="mb-3">
+                  <Form.Control
+                    as="select"
+                    name="paymentMethod"
+                    value={paymentMethod}
+                    onChange={handleChange}
+                    required
                   >
-                    Cash on Delivery
-                  </Button>
-                  <Button
-                    variant="outline-secondary"
-                    onClick={() => handlePaymentMethodChange("khalti")}
-                  >
-                    Khalti
-                  </Button>
-                </div>
-                <Button
-                  variant="primary"
-                  type="submit"
-                  className="mt-3 btn-sm"
-                  disabled={!formData.paymentMethod}
-                >
-                  Place Order
-                </Button>
+                    <option value="">Select Payment Method</option>
+                    <option value="Cash On Delivery">Cash On Delivery</option>
+                    <option value="Khalti">Khalti</option>
+                  </Form.Control>
+                </Form.Group>
+                {paymentMethod && (
+                  <div className="mt-4">
+                    <h5>
+                      Your full and final payment is Rs {grandTotal.toFixed(2)}
+                    </h5>
+                    <Button
+                      variant="primary"
+                      type="submit"
+                      className="mt-2"
+                      disabled={isLoading}
+                    >
+                      {isLoading && <span>Loading....</span>}
+                      {paymentMethod === "Cash On Delivery"
+                        ? "Place Order"
+                        : "Proceed with Khalti"}
+                    </Button>
+                  </div>
+                )}
               </Form>
             </Card.Body>
           </Card>
         </Col>
         <Col md={6}>
-          <Card>
-            <Card.Body>
-              <h3>Order Summary</h3>
-              <ListGroup variant="flush">
-                {cart.map((item) => (
-                  <ListGroup.Item key={item.id}>
-                    <Row>
-                      <Col md={6}>{item.productName}</Col>
-                      <Col md={3}>Qty: {item.quantity}</Col>
-                      <Col md={3}>Price: Rs {item.productPrice}</Col>
-                    </Row>
-                  </ListGroup.Item>
-                ))}
-                <ListGroup.Item>
-                  <Row>
-                    <Col>Total Price:</Col>
-                    <Col>Rs {totalPrice}</Col>
-                  </Row>
-                </ListGroup.Item>
-              </ListGroup>
-            </Card.Body>
-          </Card>
+          <h2>Order Summary</h2>
+          <ListGroup variant="flush">
+            <ListGroup.Item>
+              <Row>
+                <Col>Total Items:</Col>
+                <Col>{cart.reduce((acc, item) => acc + item.quantity, 0)}</Col>
+              </Row>
+            </ListGroup.Item>
+            <ListGroup.Item>
+              <Row>
+                <Col>Total Price:</Col>
+                <Col>Rs {totalPrice.toFixed(2)}</Col>
+              </Row>
+            </ListGroup.Item>
+            <ListGroup.Item>
+              <Row>
+                <Col>Tax:</Col>
+                <Col>Rs {DST.toFixed(2)}</Col>
+              </Row>
+            </ListGroup.Item>
+            <ListGroup.Item>
+              <Row>
+                <Col>Shipping Charge:</Col>
+                <Col>Rs {shippingCharge}</Col>
+              </Row>
+            </ListGroup.Item>
+            <ListGroup.Item>
+              <Row>
+                <Col>Grand Total:</Col>
+                <Col>Rs {grandTotal.toFixed(2)}</Col>
+              </Row>
+            </ListGroup.Item>
+          </ListGroup>
         </Col>
       </Row>
     </Container>
@@ -185,147 +350,3 @@ const Checkout = () => {
 };
 
 export default Checkout;
-
-
-
-// import { useState } from "react";
-// import { Container, Row, Col, Form, Button, Modal } from "react-bootstrap";
-// import { toast } from "react-toastify";
-// import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
-// import 'leaflet/dist/leaflet.css';
-// import PropTypes from 'prop-types';
-
-// const LocationMarker = ({ setFormData, formData }) => {
-//   const [position, setPosition] = useState(null);
-
-//   useMapEvents({
-//     click(e) {
-//       setPosition(e.latlng);
-//       const { lat, lng } = e.latlng;
-//       setFormData({ ...formData, location: `${lat}, ${lng}` });
-//     },
-//   });
-
-//   return position === null ? null : (
-//     <Marker position={position}></Marker>
-//   );
-// };
-
-// LocationMarker.propTypes = {
-//   setFormData: PropTypes.func.isRequired,
-//   formData: PropTypes.object.isRequired,
-// };
-
-// const Checkout = () => {
-//   const [formData, setFormData] = useState({
-//     name: "",
-//     phone: "",
-//     location: "",
-//     paymentMethod: "",
-//   });
-//   const [showMap, setShowMap] = useState(false);
-
-//   const handleChange = (e) => {
-//     const { name, value } = e.target;
-//     setFormData({ ...formData, [name]: value });
-//   };
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     try {
-//       // Add your submission logic here
-
-//       toast.success("Order placed successfully!");
-//     } catch (error) {
-//       toast.error("Failed to place order.");
-//     }
-//   };
-
-//   return (
-//     <Container className="mt-5">
-//       <Row className="justify-content-md-center">
-//         <Col md={6}>
-//           <h2>Checkout</h2>
-//           <Form onSubmit={handleSubmit}>
-//             <Form.Group controlId="formName">
-//               <Form.Label>Name</Form.Label>
-//               <Form.Control
-//                 type="text"
-//                 name="name"
-//                 value={formData.name}
-//                 onChange={handleChange}
-//                 required
-//               />
-//             </Form.Group>
-//             <Form.Group controlId="formPhone" className="mt-3">
-//               <Form.Label>Phone Number</Form.Label>
-//               <Form.Control
-//                 type="tel"
-//                 name="phone"
-//                 value={formData.phone}
-//                 onChange={handleChange}
-//                 required
-//               />
-//             </Form.Group>
-//             <Form.Group controlId="formLocation" className="mt-3">
-//               <Form.Label>Location</Form.Label>
-//               <Form.Control
-//                 type="text"
-//                 name="location"
-//                 value={formData.location}
-//                 onChange={handleChange}
-//                 required
-//               />
-//               <Button
-//                 variant="secondary"
-//                 className="mt-2"
-//                 onClick={() => setShowMap(true)}
-//               >
-//                 Set on Map
-//               </Button>
-//             </Form.Group>
-//             <Form.Group controlId="formPaymentMethod" className="mt-3">
-//               <Form.Label>Payment Method</Form.Label>
-//               <Form.Control
-//                 as="select"
-//                 name="paymentMethod"
-//                 value={formData.paymentMethod}
-//                 onChange={handleChange}
-//                 required
-//               >
-//                 <option value="">Select...</option>
-//                 <option value="cod">Cash on Delivery</option>
-//                 <option value="khalti">Khalti</option>
-//               </Form.Control>
-//             </Form.Group>
-//             <Button variant="primary" type="submit" className="mt-3">
-//               Place Order
-//             </Button>
-//           </Form>
-//         </Col>
-//       </Row>
-
-//       <Modal show={showMap} onHide={() => setShowMap(false)} size="lg">
-//         <Modal.Header closeButton>
-//           <Modal.Title>Select Location</Modal.Title>
-//         </Modal.Header>
-//         <Modal.Body>
-//           <MapContainer center={[27.7172, 85.3240]} zoom={13} style={{ height: "400px", width: "100%" }}>
-//             <TileLayer
-//               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-//               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-//             />
-//             <LocationMarker setFormData={setFormData} formData={formData} />
-//           </MapContainer>
-//         </Modal.Body>
-//         <Modal.Footer>
-//           <Button variant="secondary" onClick={() => setShowMap(false)}>
-//             Close
-//           </Button>
-//         </Modal.Footer>
-//       </Modal>
-//     </Container>
-//   );
-// };
-
-// export default Checkout;
