@@ -24,7 +24,7 @@ const AdminProductList = () => {
   }, []);
 
   const handleDeleteProduct = (id) => {
-    const confirmDialog = window.confirm("Are you sure you want to delete?");
+    const confirmDialog = window.confirm("Are you sure  to delete?");
     if (confirmDialog) {
       deleteProduct(id)
         .then((res) => {
