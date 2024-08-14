@@ -103,7 +103,7 @@ const AdminSingleOrder = () => {
           <div className="mb-0">
             <h3 className="text-lg font-semibold">Order Items</h3>
             <ul>
-              {orderItems?.map((item, index) => (
+              {orderItems?.map((item) => (
                 <li key={item._id} className="mb-2">
                   <img
                     width="90px"
