@@ -7,7 +7,7 @@ const OrderSuccess = () => {
   const navigate = useNavigate();
 
   const handleViewOrders = () => {
-    navigate("/orders");
+    navigate("/user-order-history");
   };
 
   return (

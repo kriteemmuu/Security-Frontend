@@ -1,4 +1,3 @@
-import KhaltiCheckout from "khalti-checkout-web";
 import { useState } from "react";
 import {
   Container,
@@ -10,7 +9,6 @@ import {
   Button,
 } from "react-bootstrap";
 import { toast } from "react-toastify";
-// import { createOrder } from "../../../apis/Api";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -27,6 +25,7 @@ const Checkout = () => {
   }));
 
   const user = JSON.parse(localStorage.getItem("user"));
+
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     shippingInfo: {
@@ -56,6 +55,17 @@ const Checkout = () => {
     }));
   };
 
+  // Calculate total price
+  const totalPrice = cart.reduce(
+    (acc, item) => acc + item.productPrice * item.quantity,
+    0
+  );
+
+  // Calculate DST tax (2%) and add shipping charge (Rs 100)
+  const DST = totalPrice * 0.02;
+  const shippingCharge = 100;
+  const grandTotal = totalPrice + DST + shippingCharge;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -64,27 +74,28 @@ const Checkout = () => {
         authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     };
+
     try {
+      const itemsPrice = totalPrice;
+      const taxPrice = DST;
+      const shippingPrice = shippingCharge;
+      const grandTotal = itemsPrice + taxPrice + shippingPrice;
+
+      const orderData = {
+        shippingInfo: formData.shippingInfo,
+        orderItems,
+        user: user._id,
+        paymentInfo: paymentMethod,
+        itemsPrice,
+        taxPrice,
+        shippingPrice,
+        totalPrice: grandTotal,
+      };
+
       if (paymentMethod === "Khalti") {
-        initiateKhaltiPayment();
+        await initiateKhaltiPayment(orderData);
       } else if (paymentMethod === "Cash On Delivery") {
-        const itemsPrice = totalPrice;
-        const taxPrice = DST;
-        const shippingPrice = shippingCharge;
-        const grandTotal = itemsPrice + taxPrice + shippingPrice;
-
-        const orderData = {
-          shippingInfo: formData.shippingInfo,
-          orderItems,
-          user: user._id,
-          paymentInfo: paymentMethod,
-          itemsPrice,
-          taxPrice,
-          shippingPrice,
-          totalPrice: grandTotal,
-        };
-
-        // Replace with your actual API endpoint
+        // Place order for Cash On Delivery
         await axios.post(
           `http://localhost:3001/api/order/create-Order`,
           orderData,
@@ -114,65 +125,78 @@ const Checkout = () => {
     }
   };
 
-  const initiateKhaltiPayment = () => {
-    const checkout = new KhaltiCheckout({
-      publicKey: "test_public_key_617c4c6fe77c441d88451ec1408a0c0e",
-      productIdentity: "1234567890",
-      productName: "Furniture Fusion",
-      productUrl: "http://localhost:3000",
-      eventHandler: {
-        onSuccess(payload) {
-          const data = {
-            token: payload.token,
-            amount: payload.amount,
-          };
-
-          const config = {
-            headers: {
-              Authorization: "test_secret_key_3f78fb6364ef4bd1b5fc670ce33a06f5",
-            },
-          };
-
-          axios
-            .post("https://khalti.com/api/v2/payment/verify/", data, config)
-            .then((response) => {
-              console.log(response.data);
-              toast.success("Payment Successful!");
-              // Add logic to handle successful payment and order confirmation
-            })
-            .catch((error) => {
-              console.log(error);
-              toast.error("Payment Verification Failed.");
-            });
-        },
-        onError(error) {
-          console.log(error);
-        },
-        onClose() {
-          console.log("widget is closing");
-        },
+  const initiateKhaltiPayment = async (orderData) => {
+    const config = {
+      headers: {
+        authorization: `Bearer ${localStorage.getItem("token")}`,
       },
-      paymentPreference: [
-        "KHALTI",
-        "EBANKING",
-        "MOBILE_BANKING",
-        "CONNECT_IPS",
-        "SCT",
-      ],
-    });
-    checkout.show({ amount: grandTotal * 100 });
+    };
+
+    try {
+      const payload = {
+        return_url: "http://localhost:3000/order-success",
+        website_url: "http://localhost:3000",
+        amount: parseInt(grandTotal) * 100,
+        purchase_order_id: "Test123",
+        purchase_order_name: "Test",
+        customer_info: {
+          name: `${user.firstName} ${user.lastName}`,
+          email: user.email,
+          phone: user.phone,
+        },
+      };
+
+      const res = await axios.post("http://localhost:3001/khalti-pay", payload);
+      const { payment_url, pidx } = res.data.data;
+
+      window.open(payment_url, "_blank");
+
+      // Retry mechanism to check payment status
+      const retryPaymentStatusCheck = async (retryCount = 0) => {
+        if (retryCount > 5) {
+          toast.error("Payment not completed after multiple checks.");
+          return;
+        }
+
+        try {
+          const paymentStatus = await axios.get(
+            `http://localhost:3001/payment-success?pidx=${pidx}`
+          );
+
+          if (paymentStatus.data.status === "Pending") {
+            await axios.post(
+              `http://localhost:3001/api/order/create-Order`,
+              orderData,
+              config
+            );
+
+            toast.success("Order placed successfully!");
+            navigate("/order-success");
+            localStorage.removeItem("cart");
+            setFormData({
+              shippingInfo: {
+                address: "",
+                city: "",
+                province: "",
+                country: "",
+                postalCode: "",
+              },
+              paymentMethod: "",
+            });
+          } else {
+            setTimeout(() => retryPaymentStatusCheck(retryCount + 1), 2000);
+          }
+        } catch (error) {
+          console.error("Error checking payment status:", error);
+        }
+      };
+
+      retryPaymentStatusCheck();
+    } catch (error) {
+      console.error("Error initiating payment:", error);
+      toast.error("Failed to initiate payment.");
+    }
   };
-
-  // Calculate total price
-  const totalPrice = cart.reduce(
-    (acc, item) => acc + item.productPrice * item.quantity,
-    0
-  );
-
-  // Calculate DST tax (2%) and add shipping charge (Rs 100)
-  const DST = totalPrice * 0.02;
-  const shippingCharge = 100;
-  const grandTotal = totalPrice + DST + shippingCharge;
 
   return (
     <Container className="mt-5">
@@ -287,62 +311,56 @@ const Checkout = () => {
                     <option value="Khalti">Khalti</option>
                   </Form.Control>
                 </Form.Group>
-                {paymentMethod && (
-                  <div className="mt-4">
-                    <h5>
-                      Your full and final payment is Rs {grandTotal.toFixed(2)}
-                    </h5>
-                    <Button
-                      variant="primary"
-                      type="submit"
-                      className="mt-2"
-                      disabled={isLoading}
-                    >
-                      {isLoading && <span>Loading....</span>}
-                      {paymentMethod === "Cash On Delivery"
-                        ? "Place Order"
-                        : "Proceed with Khalti"}
-                    </Button>
-                  </div>
+                {paymentMethod === "Khalti" && (
+                  <p className="text-warning">
+                    Note: You will be redirected to the Khalti payment gateway.
+                  </p>
                 )}
+                <Button
+                  variant="primary"
+                  type="submit"
+                  disabled={isLoading}
+                  className="d-flex align-items-center justify-content-center w-100"
+                >
+                  {isLoading ? (
+                    <>
+                      <span
+                        className="spinner-border spinner-border-sm"
+                        role="status"
+                        aria-hidden="true"
+                      ></span>
+                      <span className="sr-only">Processing...</span>
+                    </>
+                  ) : (
+                    "Place Order"
+                  )}
+                </Button>
               </Form>
             </Card.Body>
           </Card>
         </Col>
         <Col md={6}>
-          <h2>Order Summary</h2>
-          <ListGroup variant="flush">
-            <ListGroup.Item>
-              <Row>
-                <Col>Total Items:</Col>
-                <Col>{cart.reduce((acc, item) => acc + item.quantity, 0)}</Col>
-              </Row>
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <Row>
-                <Col>Total Price:</Col>
-                <Col>Rs {totalPrice.toFixed(2)}</Col>
-              </Row>
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <Row>
-                <Col>Tax:</Col>
-                <Col>Rs {DST.toFixed(2)}</Col>
-              </Row>
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <Row>
-                <Col>Shipping Charge:</Col>
-                <Col>Rs {shippingCharge}</Col>
-              </Row>
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <Row>
-                <Col>Grand Total:</Col>
-                <Col>Rs {grandTotal.toFixed(2)}</Col>
-              </Row>
-            </ListGroup.Item>
-          </ListGroup>
+          <h3>Order Summary</h3>
+          <Card>
+            <Card.Body>
+              <ListGroup variant="flush">
+                <ListGroup.Item>
+                  Subtotal: <strong>Rs. {totalPrice.toFixed(2)}</strong>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  DST (2%): <strong>Rs. {DST.toFixed(2)}</strong>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  Shipping: <strong>Rs. {shippingCharge.toFixed(2)}</strong>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <h4>
+                    Total: <strong>Rs. {grandTotal.toFixed(2)}</strong>
+                  </h4>
+                </ListGroup.Item>
+              </ListGroup>
+            </Card.Body>
+          </Card>
         </Col>
       </Row>
     </Container>

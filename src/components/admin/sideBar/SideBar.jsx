@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Nav } from "react-bootstrap";
-import { FaBox, FaUsers, FaList, FaEye, FaSignOutAlt } from "react-icons/fa";
-import { MdOutlineDashboardCustomize } from "react-icons/md";
+import { FaBox, FaUsers, FaList, FaSignOutAlt } from "react-icons/fa";
+import { MdOutlineDashboardCustomize, MdOutlineSettings } from "react-icons/md";
 
 const SideBar = () => {
   const navigate = useNavigate();
@@ -47,7 +47,7 @@ const SideBar = () => {
             </Nav.Item>
             <Nav.Item className="mb-3">
               <Link
-                to="/admin/add-product"
+                to="/admin_dashboard/all-orderList"
                 className="text-white d-flex align-items-center text-decoration-none"
               >
                 <FaBox className="me-2" />
@@ -56,11 +56,11 @@ const SideBar = () => {
             </Nav.Item>
             <Nav.Item className="mb-3">
               <Link
-                to="/admin/view-lists"
+                to={"#"}
                 className="text-white d-flex align-items-center text-decoration-none"
               >
-                <FaEye className="me-2" />
-                View Lists
+                <MdOutlineSettings className="me-2" />
+                Settings
               </Link>
             </Nav.Item>
             <Nav.Item className="mt-auto">

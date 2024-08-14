@@ -116,6 +116,9 @@ const TopHeader = ({ cartItemsCount }) => {
               <NavDropdown.Item as={Link} to="/profile">
                 Profile
               </NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/user-order-history">
+                My Orders
+              </NavDropdown.Item>
               {user?.role === "admin" && (
                 <NavDropdown.Item as={Link} to="/admin_dashboard">
                   Dashboard

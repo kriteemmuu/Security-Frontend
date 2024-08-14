@@ -83,16 +83,16 @@ const AdminProductList = () => {
                 <td style={{ ...styles.td, ...styles.actionCell }}>
                   <Link
                     to={`/admin_dashboard/admin/update/product/${singleProduct._id}`}
-                    style={{ ...styles.button, ...styles.editButton }}
                   >
                     <FaPencilAlt />
                   </Link>
-                  <button
+                  <Link
+                    to={"#"}
+                    style={{ color: "red" }}
                     onClick={() => handleDeleteProduct(singleProduct._id)}
-                    style={{ ...styles.button, ...styles.deleteButton }}
                   >
                     <FaTrash />
-                  </button>
+                  </Link>
                 </td>
               </tr>
             ))

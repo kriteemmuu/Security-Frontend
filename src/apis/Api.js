@@ -65,6 +65,20 @@ export const getAllReviews = (id) =>
 export const singleProductDetails = (id) =>
   Api.get(`/api/product/single-productDetail/${id}`).catch(handleApiError);
 
+export const getAllUserOrders = () =>
+  Api.get("/api/order/get-user-orders", config).catch(handleApiError);
+
+//get all admin Orders
+
+//single Order
+export const singleOrder = (id) =>
+  Api.get(`/api/order/single-order/${id}`, config).catch(handleApiError);
+// export const updateOrderStatus = (id) =>
+//   Api.put(`/api/order/update-orderStatus/${id}`, config).catch(handleApiError);
+
+export const adminSingleOrder = (id) =>
+  Api.get(`/api/order/single-order-admin/${id}`, config).catch(handleApiError);
+
 // Get All Products API
 export const getAllProducts = () =>
   Api.get("/api/product/get_all_products", config).catch(handleApiError);

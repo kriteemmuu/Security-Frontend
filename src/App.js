@@ -33,6 +33,10 @@ import DashBoard from "./components/admin/dashboardGrid/DashBoard.jsx";
 import SingleUserData from "./components/admin/singleUserData/SingleUserData.jsx";
 import OrderSuccess from "./components/orderSuccess/OrderSuccess.jsx";
 import PageNotFound from "./components/pageNotFound/PageNotFound.jsx";
+import OrderHistory from "./components/orderHistory/OrderHistory.jsx";
+import SingleOrderHistory from "./components/singleOrderHistory/SingleOrderHistory.jsx";
+import AdminOrderList from "./components/admin/adminOrderList/AdminOrderList.jsx";
+import AdminSingleOrder from "./components/admin/adminOrderList/adminSingleOrder/AdminSingleOrder.jsx";
 
 const AppContent = () => {
   const location = useLocation();
@@ -84,6 +88,11 @@ const AppContent = () => {
             }
           >
             <Route path="all-productsList" element={<AdminProductList />} />
+            <Route path="all-orderList" element={<AdminOrderList />} />
+            <Route
+              path="admin-single-order/:id"
+              element={<AdminSingleOrder />}
+            />
             <Route path="single-userData/:id" element={<SingleUserData />} />
             <Route path="admin-dashboard-stats" element={<DashBoard />} />
             <Route path="all-usersList" element={<AllUserList />} />
@@ -97,8 +106,31 @@ const AppContent = () => {
           <Route path="/search" element={<Search />} />
           <Route path="*" element={<PageNotFound />} />
           <Route path="/order-success" element={<OrderSuccess />} />
+          <Route
+            path="/user-order-history"
+            element={
+              <PrivateRoute>
+                <OrderHistory />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/single-order/:id"
+            element={
+              <PrivateRoute>
+                <SingleOrderHistory />
+              </PrivateRoute>
+            }
+          />
           <Route path="/contact-us" element={<ContactUs />} />
-          <Route path="/check-out" element={<Checkout />} />
+          <Route
+            path="/check-out"
+            element={
+              <PrivateRoute>
+                <Checkout />
+              </PrivateRoute>
+            }
+          />
           <Route path="/khalti" element={<Khalti />} />
           <Route path="/review/:productId" element={<Review />} />
         </Routes>
