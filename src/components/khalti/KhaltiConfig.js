@@ -5,7 +5,7 @@ let config = {
   publicKey: 'test_public_key_617c4c6fe77c441d88451ec1408a0c0e',
   productIdentity: "1234567890",
   productName: "Furniture Fusion",
-  productUrl: "http://localhost:3000",
+  productUrl: "https://localhost:3000",
   eventHandler: {
     onSuccess(payload) {
       // hit merchant api for initiating verfication

@@ -1,164 +1,211 @@
 import { useState } from "react";
+import { Form, Button, Container, Row, Col } from "react-bootstrap";
 import { registerUserApi } from "../../apis/Api.js";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   const navigate = useNavigate();
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [registerValue, setRegisterValue] = useState({
+    firstName: "",
+    lastName: "",
+    phone: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    termsAccepted: false,
+  });
+
+  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
-  const [firstNameError, setFirstNameError] = useState("");
-  const [lastNameError, setLastNameError] = useState("");
-  const [phoneError, setPhoneError] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [confirmPasswordError, setConfirmPasswordError] = useState("");
+  const validateForm = () => {
+    let newErrors = {};
+    const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-  const handleFirstname = (e) => setFirstName(e.target.value);
-  const handleLastname = (e) => setLastName(e.target.value);
-  const handlePhone = (e) => setPhone(e.target.value);
-  const handleEmail = (e) => setEmail(e.target.value);
-  const handlePassword = (e) => setPassword(e.target.value);
-  const handleConfirmPassword = (e) => setConfirmPassword(e.target.value);
-
-  const validate = () => {
-    let isValid = true;
-
-    if (!firstName.trim()) {
-      setFirstNameError("First name is required!");
-      isValid = false;
-    } else {
-      setFirstNameError("");
+    if (!registerValue.firstName.trim()) {
+      newErrors.firstName = "First name is required";
     }
 
-    if (!lastName.trim()) {
-      setLastNameError("Last name is required!");
-      isValid = false;
-    } else {
-      setLastNameError("");
+    if (!registerValue.lastName.trim()) {
+      newErrors.lastName = "Last name is required";
     }
 
-    if (!phone.trim()) {
-      setPhoneError("Phone number is required!");
-      isValid = false;
-    } else {
-      setPhoneError("");
+    if (!/^\d{10}$/.test(registerValue.phone)) {
+      newErrors.phone = "Phone must be 10 digits";
     }
 
-    if (!email.trim()) {
-      setEmailError("Email is required!");
-      isValid = false;
-    } else {
-      setEmailError("");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(registerValue.email)) {
+      newErrors.email = "Enter a valid email";
     }
 
-    if (!password.trim()) {
-      setPasswordError("Password is required!");
-      isValid = false;
-    } else {
-      setPasswordError("");
+    if (!registerValue.password.trim() || !passwordRegex.test(registerValue.password)) {
+      newErrors.password =
+        "Password must be at least 8 characters long, including one uppercase, one lowercase, one number, and one special character.";
     }
 
-    if (confirmPassword.trim() !== password.trim()) {
-      setConfirmPasswordError("Passwords do not match!");
-      isValid = false;
-    } else {
-      setConfirmPasswordError("");
+    if (registerValue.password !== registerValue.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
     }
 
-    return isValid;
+    if (!registerValue.termsAccepted) {
+      newErrors.termsAccepted = "You must agree to the Terms & Conditions";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!validate()) {
-      return;
-    }
+    if (!validateForm()) return;
 
     setLoading(true);
-
-    const data = {
-      firstName,
-      lastName,
-      phone,
-      email,
-      password,
-    };
-
-    registerUserApi(data)
+    registerUserApi(registerValue)
       .then((res) => {
         setLoading(false);
         if (!res.data.success) {
           toast.error(res.data.message);
         } else {
           toast.success(res.data.message);
-          navigate("/login");
+          const convertedData = JSON.stringify(res.data.data._id);
+          localStorage.setItem("userId", convertedData);
+          navigate("/verify-account");
         }
       })
       .catch((error) => {
         setLoading(false);
-        console.error("Registration error:", error);
-        toast.error("Registration failed. Please try again.");
+        if (error.response) {
+          toast.error(
+            error.response.data.message ||
+              `Error: ${error.response.status} - ${error.response.statusText}`
+          );
+        } else if (error.request) {
+          toast.error("No response from server. Please check your connection.");
+        } else {
+          toast.error("An unexpected error occurred. Please try again.");
+        }
       });
   };
 
   return (
-    
-    <>
-      <div className="container mt-5">
-        <h1 className="text-center">Create Your  Account</h1>
-        <form onSubmit={handleSubmit} className="w-50 mx-auto mt-4">
-          <div className="mb-3">
-            <label className="form-label">First Name</label>
-            <input type="text" className="form-control" placeholder="Enter your first name" onChange={handleFirstname} />
-            {firstNameError && <p className="text-danger">{firstNameError}</p>}
-          </div>
+    <Container style={{ paddingTop: '2rem', paddingBottom: '2rem' }}>
+      <h2 className="text-center">Create Your Account</h2>
+      <Form onSubmit={handleSubmit} className="w-50 mx-auto mt-4">
+        <Row className="mb-3">
+          <Col>
+            <Form.Group>
+              <Form.Label>First Name</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter first name"
+                value={registerValue.firstName}
+                onChange={(e) =>
+                  setRegisterValue({ ...registerValue, firstName: e.target.value })
+                }
+              />
+              {errors.firstName && <p className="text-danger">{errors.firstName}</p>}
+            </Form.Group>
+          </Col>
+          <Col>
+            <Form.Group>
+              <Form.Label>Last Name</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter last name"
+                value={registerValue.lastName}
+                onChange={(e) =>
+                  setRegisterValue({ ...registerValue, lastName: e.target.value })
+                }
+              />
+              {errors.lastName && <p className="text-danger">{errors.lastName}</p>}
+            </Form.Group>
+          </Col>
+        </Row>
 
-          <div className="mb-3">
-            <label className="form-label">Last Name</label>
-            <input type="text" className="form-control" placeholder="Enter your last name" onChange={handleLastname} />
-            {lastNameError && <p className="text-danger">{lastNameError}</p>}
-          </div>
+        <Form.Group className="mb-3">
+          <Form.Label>Phone</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Enter phone number"
+            value={registerValue.phone}
+            onChange={(e) =>
+              setRegisterValue({ ...registerValue, phone: e.target.value })
+            }
+          />
+          {errors.phone && <p className="text-danger">{errors.phone}</p>}
+        </Form.Group>
 
-          <div className="mb-3">
-            <label className="form-label">Phone</label>
-            <input type="text" className="form-control" placeholder="Enter your phone number" onChange={handlePhone} />
-            {phoneError && <p className="text-danger">{phoneError}</p>}
-          </div>
+        <Form.Group className="mb-3">
+          <Form.Label>Email</Form.Label>
+          <Form.Control
+            type="email"
+            placeholder="Enter email"
+            value={registerValue.email}
+            onChange={(e) =>
+              setRegisterValue({ ...registerValue, email: e.target.value })
+            }
+          />
+          {errors.email && <p className="text-danger">{errors.email}</p>}
+        </Form.Group>
 
-          <div className="mb-3">
-            <label className="form-label">Email</label>
-            <input type="email" className="form-control" placeholder="Enter your email" onChange={handleEmail} />
-            {emailError && <p className="text-danger">{emailError}</p>}
-          </div>
+        <Form.Group className="mb-3">
+          <Form.Label>Password</Form.Label>
+          <Form.Control
+            type="password"
+            placeholder="Enter password"
+            value={registerValue.password}
+            onChange={(e) =>
+              setRegisterValue({ ...registerValue, password: e.target.value })
+            }
+          />
+          {errors.password && <p className="text-danger">{errors.password}</p>}
+        </Form.Group>
 
-          <div className="mb-3">
-            <label className="form-label">Password</label>
-            <input type="password" className="form-control" placeholder="Enter your password" onChange={handlePassword} />
-            {passwordError && <p className="text-danger">{passwordError}</p>}
-          </div>
+        <Form.Group className="mb-3">
+          <Form.Label>Confirm Password</Form.Label>
+          <Form.Control
+            type="password"
+            placeholder="Confirm password"
+            value={registerValue.confirmPassword}
+            onChange={(e) =>
+              setRegisterValue({ ...registerValue, confirmPassword: e.target.value })
+            }
+          />
+          {errors.confirmPassword && <p className="text-danger">{errors.confirmPassword}</p>}
+        </Form.Group>
 
-          <div className="mb-3">
-            <label className="form-label">Confirm Password</label>
-            <input type="password" className="form-control" placeholder="Confirm your password" onChange={handleConfirmPassword} />
-            {confirmPasswordError && <p className="text-danger">{confirmPasswordError}</p>}
-          </div>
-          
-          <button type="submit" className="btn btn-primary w-100">
-            {loading && <span>Loading...</span>}
-            
-            Create an Account
-          </button>
-        </form>
-      </div>
-    </>
+        <Form.Group className="mb-3">
+          <Form.Check
+            type="checkbox"
+            label={
+              <>
+                I agree to the{" "}
+                <a href="/terms" target="_blank" rel="noopener noreferrer">
+                  Terms & Conditions
+                </a>
+              </>
+            }
+            checked={registerValue.termsAccepted}
+            onChange={(e) =>
+              setRegisterValue({ ...registerValue, termsAccepted: e.target.checked })
+            }
+          />
+          {errors.termsAccepted && <p className="text-danger">{errors.termsAccepted}</p>}
+        </Form.Group>
+
+        <Button
+          variant="primary"
+          type="submit"
+          className="w-100"
+          disabled={!registerValue.termsAccepted || loading}
+        >
+          {loading ? "Creating Account..." : "Create an Account"}
+        </Button>
+      </Form>
+    </Container>
   );
 };
 

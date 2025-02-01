@@ -19,7 +19,36 @@ const ProfilePage = () => {
   const [passwordData, setPasswordData] = useState({
     oldPassword: "",
     newPassword: "",
+    confirmPassword: "",
   });
+  const [passwordError, setPasswordError] = useState({});
+  const [isFetching,setIsFetching] = useState(false);
+
+  const validatePassword = () => {
+    let newErrors = {};
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+    if (!passwordData.oldPassword) {
+      newErrors.oldPassword = "Old password is required.";
+    }
+
+    if (!passwordData.newPassword) {
+      newErrors.newPassword = "New password is required.";
+    } else if (!passwordRegex.test(passwordData.newPassword)) {
+      newErrors.newPassword =
+        "Password must be at least 8 characters long, with uppercase, lowercase, number, and special character.";
+    }
+
+    if (!passwordData.confirmPassword) {
+      newErrors.confirmPassword = "Confirm password is required.";
+    } else if (passwordData.newPassword !== passwordData.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match.";
+    }
+
+    setPasswordError(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
@@ -92,8 +121,12 @@ const ProfilePage = () => {
 
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
+    if (!validatePassword()) return;
+    setIsFetching(true);
+
 
     try {
+
       const token = localStorage.getItem("token");
       await axios.put(
         "http://localhost:3001/api/user/change-password",
@@ -105,12 +138,26 @@ const ProfilePage = () => {
         }
       );
       toast.success("Password changed successfully!");
-      setPasswordData({ oldPassword: "", newPassword: "" });
+      setPasswordData({
+        oldPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
       localStorage.removeItem("user");
       toast.success("Successfully logged out");
       navigate("/login");
-    } catch (err) {
-      setError("Failed to change password");
+    } catch (error) {
+      setIsFetching(false);
+      if (error.response) {
+        toast.error(
+          error.response.data.message ||
+            `Error: ${error.response.status} - ${error.response.statusText}`
+        );
+      } else if (error.request) {
+        toast.error("No response from server. Please check your connection.");
+      } else {
+        toast.error("An unexpected error occurred. Please try again.");
+      }
     }
   };
 
@@ -207,6 +254,9 @@ const ProfilePage = () => {
                     value={passwordData.oldPassword}
                     onChange={handlePasswordChange}
                   />
+                  {passwordError.oldPassword && (
+                    <p className="text-danger">{passwordError.oldPassword}</p>
+                  )}
                 </Form.Group>
                 <Form.Group controlId="formNewPassword">
                   <Form.Label>New Password</Form.Label>
@@ -216,9 +266,26 @@ const ProfilePage = () => {
                     value={passwordData.newPassword}
                     onChange={handlePasswordChange}
                   />
+                  {passwordError.newPassword && (
+                    <p className="text-danger">{passwordError.newPassword}</p>
+                  )}
+                </Form.Group>
+                <Form.Group controlId="formNewPassword">
+                  <Form.Label>Confirm Password</Form.Label>
+                  <Form.Control
+                    type="password"
+                    name="confirmPassword"
+                    value={passwordData.confirmPassword}
+                    onChange={handlePasswordChange}
+                  />
+                  {passwordError.confirmPassword && (
+                    <p className="text-danger">
+                      {passwordError.confirmPassword}
+                    </p>
+                  )}
                 </Form.Group>
                 <Button variant="primary" type="submit" className="mt-3">
-                  Change Password
+                  {isFetching ? "Changing Password..." : "Change Password"}
                 </Button>
               </Form>
             </Card.Body>

@@ -84,7 +84,7 @@ const Review = () => {
         <Col md={6}>
           <h2>Review for {product.productName}</h2>
           <img
-            src={`http://localhost:3001/products/${product.productImage}`}
+            src={`https://localhost:3001/products/${product.productImage}`}
             alt={product.productName}
             className="img-fluid mb-3"
           />

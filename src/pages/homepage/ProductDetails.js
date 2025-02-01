@@ -130,7 +130,7 @@ const ProductDetails = ({ updateCartCount }) => {
           </span>
           <Col md={6}>
             <img
-              src={`http://localhost:3001/products/${product.productImage}`}
+              src={`https://localhost:3001/products/${product.productImage}`}
               alt={product.productName}
               className="img-fluid"
             />

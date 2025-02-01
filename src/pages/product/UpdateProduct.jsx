@@ -30,7 +30,7 @@ const UpdateProduct = () => {
         setProductCategory(res.data.product.productCategory);
         setProductDescription(res.data.product.productDescription);
         setPreviewImage(
-          `http://localhost:3001/products/${res.data.product.productImage}`
+          `https://localhost:3001/products/${res.data.product.productImage}`
         );
       } catch (error) {
         console.error(error);

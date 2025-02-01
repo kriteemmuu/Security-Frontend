@@ -35,7 +35,7 @@
 //                   <Row>
 //                     <Col md={2}>
 //                       <img
-//                         src={`http://localhost:3001/products/${item.productImage}`}
+//                         src={`https://localhost:3001/products/${item.productImage}`}
 //                         alt={item.productName}
 //                         className="img-fluid"
 //                       />
@@ -99,7 +99,7 @@ const WishList = () => {
                   <Row>
                     <Col md={2}>
                       <img
-                        src={`http://localhost:3001/products/${item.productImage}`}
+                        src={`https://localhost:3001/products/${item.productImage}`}
                         alt={item.productName}
                         className="img-fluid"
                       />

@@ -40,12 +40,28 @@ const handleApiError = (error) => {
 export const testAPI = () => Api.get("/test").catch(handleApiError);
 
 // Register API
-export const registerUserApi = (data) =>
-  Api.post("/api/user/create", data).catch(handleApiError);
+export const registerUserApi = (registerValue) =>
+  Api.post("/api/user/create", registerValue).catch(handleApiError);
 
 // Login API
 export const loginUserApi = (data) =>
   Api.post("/api/user/login", data).catch(handleApiError);
+
+//OTP Verify
+export const otpVerifyAccount = (otp,userId) =>
+  Api.post("/api/user/verify-account", otp,userId).catch(handleApiError);
+
+//resend OTP
+export const resendOtp = (userId) =>
+  Api.post("/api/user/resend-otp", userId).catch(handleApiError);
+
+export const generateOtpApi = (data) => {
+  return Api.post(`/api/user/generate-otp`, data).catch(handleApiError);
+};
+
+export const verifyOtpApi = (data) => {
+  return Api.post(`/api/user/login`, data).catch(handleApiError);
+};
 
 // Create Product API
 export const createProductApi = (data) =>
@@ -143,7 +159,7 @@ export const submitReviewApi = (data) =>
 
 // // Creating Backend Config
 // const Api = axios.create({
-//   baseURL: "http://localhost:3001",
+//   baseURL: "https://localhost:3001",
 //   withCredentials: true,
 //   headers: {
 //     "Content-Type": "application/json", // Changed to application/json unless you need multipart/form-data

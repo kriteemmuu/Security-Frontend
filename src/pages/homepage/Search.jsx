@@ -58,7 +58,7 @@ const Search = () => {
           <div key={product.id} className="card mt-3">
             <div className="card-body d-flex align-items-center">
               <img
-                src={`http://localhost:3001/products/${product.productImage}`}
+                src={`https://localhost:3001/products/${product.productImage}`}
                 alt={product.productName}
                 style={styles.image}
               />

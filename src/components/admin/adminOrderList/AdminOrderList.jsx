@@ -19,7 +19,7 @@ const AdminOrderList = () => {
       };
       try {
         const res = await axios.get(
-          `http://localhost:3001/api/order/all-orders`,
+          `https://localhost:3001/api/order/all-orders`,
           config
         );
         setAdminOrders(res.data.data);
@@ -40,7 +40,7 @@ const AdminOrderList = () => {
     };
     try {
       await axios.delete(
-        `http://localhost:3001/api/order/delete-order/${id}`,
+        `https://localhost:3001/api/order/delete-order/${id}`,
         config
       );
       toast.success("order deleted successFully!");

@@ -97,7 +97,7 @@ const Checkout = () => {
       } else if (paymentMethod === "Cash On Delivery") {
         // Place order for Cash On Delivery
         await axios.post(
-          `http://localhost:3001/api/order/create-Order`,
+          `https://localhost:3001/api/order/create-Order`,
           orderData,
           config
         );
@@ -134,8 +134,8 @@ const Checkout = () => {
 
     try {
       const payload = {
-        return_url: "http://localhost:3000/order-success",
-        website_url: "http://localhost:3000",
+        return_url: "https://localhost:3000/order-success",
+        website_url: "https://localhost:3000",
         amount: parseInt(grandTotal) * 100,
         purchase_order_id: "Test123",
         purchase_order_name: "Test",
@@ -146,7 +146,7 @@ const Checkout = () => {
         },
       };
 
-      const res = await axios.post("http://localhost:3001/khalti-pay", payload);
+      const res = await axios.post("https://localhost:3001/khalti-pay", payload);
       const { payment_url, pidx } = res.data.data;
 
       window.open(payment_url, "_blank");
@@ -160,12 +160,12 @@ const Checkout = () => {
 
         try {
           const paymentStatus = await axios.get(
-            `http://localhost:3001/payment-success?pidx=${pidx}`
+            `https://localhost:3001/payment-success?pidx=${pidx}`
           );
 
           if (paymentStatus.data.status === "Pending") {
             await axios.post(
-              `http://localhost:3001/api/order/create-Order`,
+              `https://localhost:3001/api/order/create-Order`,
               orderData,
               config
             );

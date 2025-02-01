@@ -17,7 +17,7 @@ const OrderHistory = () => {
           },
         };
         const res = await axios.get(
-          `http://localhost:3001/api/order/get-user-orders`,
+          `https://localhost:3001/api/order/get-user-orders`,
           config
         );
         setAllOrders(res.data.data);

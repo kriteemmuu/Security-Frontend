@@ -15,7 +15,7 @@ const DashBoard = () => {
       };
       try {
         const res = await axios.get(
-          `http://localhost:3001/api/order/get-stats`,
+          `https://localhost:3001/api/order/get-stats`,
           config
         );
         setStatData(res.data.data);

@@ -101,7 +101,7 @@ const SingleOrderHistory = () => {
               <img
                 width="90px"
                 height="auto"
-                src={`http://localhost:3001/products/${item?.productImg}`}
+                src={`https://localhost:3001/products/${item?.productImg}`}
                 alt="productImage"
               />
 

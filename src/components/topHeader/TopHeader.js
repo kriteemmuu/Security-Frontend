@@ -11,12 +11,15 @@ import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { FaHeart, FaShoppingCart, FaSearch, FaPhoneAlt } from "react-icons/fa";
 import PropTypes from "prop-types";
+import {jwtDecode} from "jwt-decode";
+import { startTransition } from "react";
 
 const TopHeader = ({ cartItemsCount }) => {
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("user"));
-
   const [wishlistCount, setWishlistCount] = useState(0);
+  const user = JSON.parse(localStorage.getItem("user"))
+  const token = localStorage.getItem("token");
+
 
   useEffect(() => {
     const updateWishlistCount = () => {
@@ -29,14 +32,50 @@ const TopHeader = ({ cartItemsCount }) => {
     return () => window.removeEventListener("storage", updateWishlistCount);
   }, []);
 
+  useEffect(() => {
+    const checkTokenExpiration = () => {
+      if (token) {
+        try {
+          const decoded = jwtDecode(token);
+          if (decoded.exp * 1000 < Date.now()) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            localStorage.removeItem("cart");
+            localStorage.removeItem("wishlist");
+          
+            toast.success("Session expired. Please log in again.");
+            navigate("/login");
+          }
+        } catch (error) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          localStorage.removeItem("cart");
+          localStorage.removeItem("wishlist");
+   
+          toast.success("Session expired. Please log in again.");
+          navigate("/login");
+        }
+      }
+    };
+  
+    checkTokenExpiration();
+    const interval = setInterval(checkTokenExpiration, 60000);
+    return () => clearInterval(interval);
+  }, [navigate,token]);
+  
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     localStorage.removeItem("cart");
     localStorage.removeItem("wishlist");
-
-    toast.success("Successfully logged out");
-    navigate("/login");
+  
+    startTransition(() => {
+  
+      navigate("/login");
+    });
+  
+    toast.success("Logout successfully! Please log in again.");
   };
 
   const handleGoToSearch = () => {

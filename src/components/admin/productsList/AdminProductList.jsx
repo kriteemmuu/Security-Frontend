@@ -70,7 +70,7 @@ const AdminProductList = () => {
                   <img
                     width="40px"
                     height="40px"
-                    src={`http://localhost:3001/products/${singleProduct.productImage}`}
+                    src={`https://localhost:3001/products/${singleProduct.productImage}`}
                     alt="productImage"
                     style={styles.img}
                   />

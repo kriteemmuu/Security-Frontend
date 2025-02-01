@@ -56,7 +56,7 @@ const SingleUserData = () => {
               <Row className="mb-3">
                 <Col md={4} className="text-center">
                   <Image
-                    src={`http://localhost:3001/profile/${avatar}`}
+                    src={`https://localhost:3001/profile/${avatar}`}
                     roundedCircle
                     fluid
                     style={{ width: "150px", height: "150px" }}

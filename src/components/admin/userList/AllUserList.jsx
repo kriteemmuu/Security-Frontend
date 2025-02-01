@@ -16,7 +16,7 @@
 //         },
 //       };
 //       const res = await axios.get(
-//         `http://localhost:3001/api/user/all-adminUsers`,
+//         `https://localhost:3001/api/user/all-adminUsers`,
 //         config
 //       );
 //       setUsers(res.data.users);
@@ -128,7 +128,7 @@ const AllUserList = () => {
         },
       };
       const res = await axios.get(
-        `http://localhost:3001/api/user/all-adminUsers`,
+        `https://localhost:3001/api/user/all-adminUsers`,
         config
       );
       setUsers(res.data.users);
@@ -153,7 +153,7 @@ const AllUserList = () => {
           },
         };
         await axios.delete(
-          `http://localhost:3001/api/user/delete/${userId}`,
+          `https://localhost:3001/api/user/delete/${userId}`,
           config
         );
         setUsers(users.filter((user) => user._id !== userId));

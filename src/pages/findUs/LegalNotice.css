@@ -1,0 +1,17 @@
+.legal-notice-card {
+    background: #f8f9fa; /* Light gray background */
+    border-radius: 10px; /* Rounded corners for the card */
+  }
+  
+  .legal-notice-card h2 {
+    margin-top: 20px;
+  }
+  
+  .legal-notice-card p {
+    line-height: 1.6; /* Improved line spacing for readability */
+  }
+  
+  .text-center {
+    font-size: 24px; /* Larger font size for the main title */
+  }
+  

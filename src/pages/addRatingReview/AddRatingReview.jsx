@@ -9,7 +9,17 @@ const AddRatingReview = ({ id }) => {
   const [comment, setComment] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [reviews, setReviews] = useState([]);
-  let token = localStorage.getItem("token")
+  let token = localStorage.getItem("token");
+
+  // Define fetchedData function here
+  const fetchedData = async () => {
+    try {
+      const res = await getAllReviews(id);
+      setReviews(res.data.reviews);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,16 +30,16 @@ const AddRatingReview = ({ id }) => {
 
     setIsLoading(true);
     try {
-      if(token){
-          const data = { productId: id, rating, comment };
-          await addRatingReview(data);
-          toast.success("Review added successfully!");
-          setRating("");
-          setComment("");
-          await fetchedData();
-      }else{
-        toast.error("Please Login first")
-        return
+      if (token) {
+        const data = { productId: id, rating, comment };
+        await addRatingReview(data);
+        toast.success("Review added successfully!");
+        setRating("");
+        setComment("");
+        await fetchedData(); 
+      } else {
+        toast.error("Please Login first");
+        return;
       }
     } catch (error) {
       toast.error("Failed to add review. Please try again.");
@@ -38,18 +48,19 @@ const AddRatingReview = ({ id }) => {
     }
   };
 
-  const fetchedData = async () => {
-    try {
-      const res = await getAllReviews(id);
-      setReviews(res.data.reviews);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
-    fetchedData();
-  }, []);
+    const fetchedData = async () => {
+      try {
+        const res = await getAllReviews(id);
+        setReviews(res.data.reviews);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+  
+    fetchedData(); 
+  }, [id]); 
+  
 
   const renderStars = (rating) => {
     return Array.from({ length: 5 }, (_, index) => (

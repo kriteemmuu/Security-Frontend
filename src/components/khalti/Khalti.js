@@ -7,7 +7,7 @@ export default function Khalti(){
       publicKey: 'test_public_key_617c4c6fe77c441d88451ec1408a0c0e',
       productIdentity: "1234567890",
       productName: "beep",
-      productUrl: "http://localhost:3001",
+      productUrl: "https://localhost:3001",
       eventHandler: {
         onSuccess(payload) {
           // hit merchant api for initiating verfication

@@ -25,7 +25,7 @@ const AdminSingleOrder = () => {
     try {
       setIsLoading(true);
       await axios.put(
-        `http://localhost:3001/api/order/update-orderStatus/${id}`,
+        `https://localhost:3001/api/order/update-orderStatus/${id}`,
         { status: selectedStatus },
         config
       );
@@ -108,7 +108,7 @@ const AdminSingleOrder = () => {
                   <img
                     width="90px"
                     height="auto"
-                    src={`http://localhost:3001/products/${item?.productImg}`}
+                    src={`https://localhost:3001/products/${item?.productImg}`}
                     alt="productImage"
                   />
                   <p>Product: {item?.productName}</p>
